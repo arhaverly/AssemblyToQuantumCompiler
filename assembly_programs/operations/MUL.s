@@ -1,7 +1,7 @@
 {"register_size": 4}
 
-MOV R1, #2
-MOV R2, #3
-MUL R3, R1, R2
+MOV R0, #2
+MOV R1, #3
+MUL R2, R0, R1
 
-STR CR1, R3
+STR CR0, R2

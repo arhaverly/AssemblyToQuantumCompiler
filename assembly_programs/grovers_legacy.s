@@ -3,19 +3,19 @@
 ;proof that Grover's Algorithm can be run with this!
 ;with register_size = 1, only X1X1 are measured
 ;hadamard
+HAD R0
 HAD R1
-HAD R2
 
-AND R3, R1, R2
+AND R2, R0, R1
 
-;takes the first bit from R1 and applies it to the target
-TGT R3
+;takes the first bit from R0 and applies it to the target
+TGT R2
 
 ;need to remove once the reverse functionality is added
-AND R3, R1, R2
+AND R2, R0, R1
 
 ;diffuser
-DIF {R1, R2}
+DIF {R0, R1}
 
+STR CR0, R0
 STR CR1, R1
-STR CR2, R2

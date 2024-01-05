@@ -1,5 +1,5 @@
 {"register_size": 2}
 
-MVN R1, #1
+MVN R0, #1
 
-STR CR1, R1
+STR CR0, R0

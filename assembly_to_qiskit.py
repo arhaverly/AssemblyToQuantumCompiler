@@ -39,8 +39,19 @@ Added gates:
 
 We want to know where the oracle is and what the reverse of it is.
 
-'''
 
+
+
+Branching
+B: Precompiler classically unravel the loop
+
+BEQ, BNE: Might be possible to classically unravel the loop
+    Easy: If it's a FOR loop, just unravel the set number of times
+
+    Difficult: If the condition is difficult to predict, we can use controlled gates, 
+        but then need to carry down the registers if the value is not set.
+        We can carry down the registers by using controlled gates too.
+'''
 
 
 
@@ -68,35 +79,35 @@ from qiskit.tools.monitor import job_monitor
 
 
 allowed_operations = {
-    "ADC",
-    "ADD",
-    "AND",
-    "BIC",
-    "CMN",
-    "CMP",
-    "EOR",
-    "LSL",
-    "LSR",
-    "MLA",
-    "MOV",
-    "MRS",
-    "MSR",
-    "MUL",
-    "MVN",
-    "ORR",
-    "RSB",
-    "RSC",
-    "SBC",
-    "STR",
-    "SUB",
-    "TEQ",
-    "TST",
-    "HAD",
-    "XXX",
-    "DIF",
-    "TGT",
-    "MCT",
-    "BAR"
+    'ADC',
+    'ADD',
+    'AND',
+    'BIC',
+    'CMN',
+    'CMP',
+    'EOR',
+    'LSL',
+    'LSR',
+    'MLA',
+    'MOV',
+    'MRS',
+    'MSR',
+    'MUL',
+    'MVN',
+    'ORR',
+    'RSB',
+    'RSC',
+    'SBC',
+    'STR',
+    'SUB',
+    'TEQ',
+    'TST',
+    'HAD',
+    'XXX',
+    'DIF',
+    'TGT',
+    'MCT',
+    'BAR'
 }
 
 
@@ -116,7 +127,7 @@ def qor():
     qc.x(2)
 
     QOR = qc.to_gate()
-    QOR.name = "M_QOR"
+    QOR.name = 'M_QOR'
     return QOR
 
 
@@ -164,14 +175,14 @@ def int_to_binary_string(num, register_size):
 
 
 def get_register_location(register_name, register_size, additional_flags):
-    register = int(register_name.replace('R', '')) - 1
+    register = int(register_name.replace('R', ''))
 
     # print(register_name, register_size, additional_flags)
 
     return [i for i in range(register*register_size + additional_flags, (register+1)*register_size + additional_flags)]
 
 def get_classical_register_location(register_name, register_size):
-    register = int(register_name.replace('CR', '')) - 1
+    register = int(register_name.replace('CR', ''))
 
     return [i for i in range(register*register_size, (register+1)*register_size)]
 
@@ -207,7 +218,7 @@ def diffuser(nqubits):
         qc.h(qubit)
     # We will return the diffuser as a gate
     U_s = qc.to_gate()
-    U_s.name = "DIF"
+    U_s.name = 'DIF'
     return U_s
 
 
@@ -1436,7 +1447,9 @@ def initialize(instructions, register_size):
 
         print(instruction, classical_memory_needed)
 
-    return highest_register*register_size+targets+zero_flag+negative_flag+carry_flag+overflow_flag, ancilla, targets, zero_flag, negative_flag, carry_flag, overflow_flag, classical_memory_needed
+    print(highest_register)
+
+    return (highest_register+1)*register_size+targets+zero_flag+negative_flag+carry_flag+overflow_flag, ancilla, targets, zero_flag, negative_flag, carry_flag, overflow_flag, classical_memory_needed
 
 def get_parameters(assembly_program):
     with open(assembly_program, 'r') as file:

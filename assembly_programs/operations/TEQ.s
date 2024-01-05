@@ -1,6 +1,6 @@
 {"register_size": 2}
 
-MOV R1, #1
-TEQ R1, #1
+MOV R0, #1
+TEQ R0, #1
 
-STR CR1, R2
+STR CR0, R1

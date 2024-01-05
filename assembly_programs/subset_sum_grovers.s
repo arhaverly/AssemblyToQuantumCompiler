@@ -17,30 +17,30 @@
 
 
 
-; put R1 and R2 into superposition
+; put R0 and R1 into superposition
+HAD R0
 HAD R1
-HAD R2
 
 
 ORACLE
     ; load the target value
-    MOV R3, #3 ; Load target sum into R2
+    MOV R2, #3 ; Load target sum into R1
 
     
     ; Calculate sum of two numbers
-    ADD R4, R1, R2 ; Add the two numbers, result in R3
+    ADD R3, R0, R1 ; Add the two numbers, result in R2
 
-    CMP R4, R3 ; Compare sum with target
+    CMP R3, R2 ; Compare sum with target
 END_ORACLE
 
 TGT ZERO
 
 REVERSE_ORACLE
 
-DIF {R1, R2}
+DIF {R0, R1}
 
+STR CR0, R0
 STR CR1, R1
-STR CR2, R2
 
 
 

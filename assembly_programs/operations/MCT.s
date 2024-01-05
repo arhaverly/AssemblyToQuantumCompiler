@@ -3,18 +3,18 @@
 ;proof that Grover's Algorithm can be run with this!
 ;with register_size = 1, only X1X1 are measured
 ;hadamard
-HAD R1
+HAD R0
 
 ORACLE
-	MOV R1, #3
+	MOV R0, #3
 END_ORACLE
 
-;takes the first bit from R1 and applies it to the target
-MCT R1
+;takes the first bit from R0 and applies it to the target
+MCT R0
 
 REVERSE_ORACLE
 
 ;diffuser
-DIF {R1}
+DIF {R0}
 
-STR CR1, R1
+STR CR0, R0
