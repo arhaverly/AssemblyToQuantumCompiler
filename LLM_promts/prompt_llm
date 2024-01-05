@@ -1,0 +1,91 @@
+# winner so far
+# https://chat.openai.com/share/488adf7a-897a-4978-b608-fdeeee47b1a6
+
+Values are stored in R1 and R2. Decide what these values are then create an assembly code using the following instructions to decide if these values are a valid solution to the subset sum problem.
+
+ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MLA, MOV, MRS, MSR, MUL, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, TST
+
+Store the value in the ZERO PSR flag. The largest number allowed for your example is 3.
+
+
+
+
+# kinda, but not great
+The bits are random in R1 and R2. They cannot be changed. Decide what these values represent then create an assembly code using the following instructions to decide if these values are a valid solution to the subset sum problem.
+
+ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MLA, MOV, MRS, MSR, MUL, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, TST
+
+Store the value in the ZERO PSR flag. The largest number allowed for your example is 3.
+
+
+
+
+
+
+
+
+
+values are stored in R1 and R2. decide what these values are then create an assembly code using the following instructions to decide if these values are a valid solution to the subset sum problem
+
+ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MLA, MOV, MRS, MSR, MUL, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, TST
+
+Store the value in the ZERO PSR flag
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Provide a solution to the subset sum problem using these ARM operations with 2 bit registers:
+ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MLA, MOV, MRS, MSR, MUL, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, TST
+
+These operations are not allowed:
+B, BEQ, BNE
+
+Give only the code
+
+
+
+
+# when Grover's Algorithm is mentioned, it says that this is too complicated of a problem to solve.
+
+You are tasked with solving the Subset Sum problem using Grover's Algorithm using ARM assembly with register size of 2 where these are the operations you are allowed to use:
+
+ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MLA, MOV, MRS, MSR, MUL, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, TST, HAD, XXX, DIF, TGT, MCT, BAR
+
+You can use the HAD operation to put registers into superposition, TGT can apply the ZERO flag on the target qubit, DIF can apply the diffuser on the registers
+
+
+Give me just the code with comments
+
+
+
+
+
+
+
+
+

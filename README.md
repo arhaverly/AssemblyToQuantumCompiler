@@ -1,3 +1,6 @@
+# This project was created as part of Andy Haverly's PhD Dissertation. Please forgive the messiness :)
+
+
 How can I use these transformations more easily?
 
 Can I reuse registers? No. To maintain coherence, the reset gate cannot be used.
