@@ -111,7 +111,9 @@ allowed_operations = {
 }
 
 
-# classical_memory = []
+# TODO: create a precompiler that unravels branches
+def precompile(filename):
+    pass
 
 
 
@@ -181,7 +183,7 @@ def get_register_location(register_name, register_size, additional_flags):
 
     return [i for i in range(register*register_size + additional_flags, (register+1)*register_size + additional_flags)]
 
-def get_classical_register_location(register_name, register_size):
+def get_classical_register_location(register_size, register_name):
     register = int(register_name.replace('CR', ''))
 
     return [i for i in range(register*register_size, (register+1)*register_size)]
@@ -967,7 +969,7 @@ def SBC(qc, register_size, ancilla_counter, additional_flags, carry_flag_counter
 
 def STR(qc, cr, register_size, additional_flags, op1, op2, op3):
     # need to add offset capability
-    Rd = get_classical_register_location(op1, register_size)
+    Rd = get_classical_register_location(register_size, op1)
     Rn = get_register_location(op2, register_size, additional_flags)
 
     print('Rd (classical):', Rd)
@@ -1591,9 +1593,29 @@ def evaluate_instruction(instruction, qc, cr, in_oracle, register_size, ancilla_
 
 
 
+def decode(register_size, decoding, results):
+    if decoding is None:
+        print('Results:', results)
+        return
+
+    sorted_results = sorted(results.items(), key=lambda x: x[1], reverse=True)
+
+
+    for result in sorted_results:
+        print('# Measurements:', result[1])
+        for classical_register in decoding.keys():
+            print(decoding[classical_register], end=': ')
+            for i in reversed(get_classical_register_location(register_size, classical_register)):
+                print(result[0][::-1][i], end='')
+
+            print()
+
+
+
 def assembly_to_qiskit(assembly_program):
     parameters = get_parameters(assembly_program)
     register_size = parameters.get('register_size', 2)
+    decoding = parameters.get('decoding', None)
     run = parameters.get('run', True)
     instructions = get_instructions(assembly_program)
     name = assembly_program.split('.')[0]
@@ -1710,30 +1732,34 @@ def assembly_to_qiskit(assembly_program):
 
             
 
-    return qc, name, run
+    return qc, name, run, register_size, decoding
 
 
 
 if __name__ == '__main__':
-    qc, name, run = assembly_to_qiskit(sys.argv[1])
+    qc, name, run, register_size, decoding = assembly_to_qiskit(sys.argv[1])
 
     name = name.replace('assembly_programs/','').replace('operations/', '')
 
     qc.draw(output='mpl', filename='Figures/'+name+'_circuit.png', fold=140)
 
-    print(qc.num_qubits)
 
     if run:
         qasm_simulator = Aer.get_backend('qasm_simulator')
         shots = 1000
         results = execute(qc, backend=qasm_simulator, shots=shots).result()
         answer = results.get_counts()
+        
         print()
-        print(answer)
+        decode(register_size, decoding, answer)
+        print()
+
+
         hist = plot_histogram(answer)
         plt.savefig('Figures/'+name+'_hist.png')
 
 
+    print()
     plt.subplots_adjust(bottom=0.4)
     plt.show()
 
