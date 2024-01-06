@@ -1,7 +1,7 @@
 # winner so far
 # https://chat.openai.com/share/488adf7a-897a-4978-b608-fdeeee47b1a6
 
-Values are stored in R1 and R2. Decide what these values are then create an assembly code using the following instructions to decide if these values are a valid solution to the subset sum problem.
+Values are stored in R0 and R1. Decide what these values are then create an assembly code using the following instructions to decide if these values are a valid solution to the subset sum problem.
 
 ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MLA, MOV, MRS, MSR, MUL, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, TST
 
@@ -11,7 +11,7 @@ Store the value in the ZERO PSR flag. The largest number allowed for your exampl
 
 
 # kinda, but not great
-The bits are random in R1 and R2. They cannot be changed. Decide what these values represent then create an assembly code using the following instructions to decide if these values are a valid solution to the subset sum problem.
+The bits are random in R0 and R1. They cannot be changed. Decide what these values represent then create an assembly code using the following instructions to decide if these values are a valid solution to the subset sum problem.
 
 ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MLA, MOV, MRS, MSR, MUL, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, TST
 

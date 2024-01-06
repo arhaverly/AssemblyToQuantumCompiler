@@ -54,11 +54,22 @@ BEQ, BNE: Might be possible to classically unravel the loop
 '''
 
 
-
 #initialization
 import matplotlib.pyplot as plt
 import numpy as np
 import networkx as nx
+
+import json
+import random
+import sys
+import io
+
+
+
+# Redirect standard error
+original_stderr = sys.stderr
+sys.stderr = io.StringIO()
+
 
 # importing Qiskit
 from qiskit import IBMQ, Aer, QuantumCircuit, ClassicalRegister, QuantumRegister, execute
@@ -69,13 +80,16 @@ from qiskit.providers.aer import QasmSimulator
 
 from qiskit.circuit.library import MCMT, CSwapGate, CHGate
 
-import json
-import random
-import sys
+
 
 # import basic plot tools
 from qiskit.visualization import plot_histogram
 from qiskit.tools.monitor import job_monitor
+
+
+# Restore standard error
+sys.stderr = original_stderr
+
 
 
 allowed_operations = {
@@ -134,7 +148,6 @@ def qor():
 
 
 def full_adder(qc, A, B, Cin, Sum, Cout):
-    # print(A, B, Cin, Sum, Cout)
     qc.barrier()
     qc.cx(A, Sum)
     qc.cx(B, Sum)
@@ -153,7 +166,6 @@ def full_adder(qc, A, B, Cin, Sum, Cout):
 
 
 def ripple_carry_adder(qc, register_size, Rd, Rn, Operand, CarryRegister, CarryFlag):
-    # print(Rn, Operand, Rd, CarryRegister)
     full_adder(qc, Rn[0], Operand[0], None, Rd[0], CarryRegister[0])
     qc.barrier()
 
@@ -179,8 +191,6 @@ def int_to_binary_string(num, register_size):
 def get_register_location(register_name, register_size, additional_flags):
     register = int(register_name.replace('R', ''))
 
-    # print(register_name, register_size, additional_flags)
-
     return [i for i in range(register*register_size + additional_flags, (register+1)*register_size + additional_flags)]
 
 def get_classical_register_location(register_size, register_name):
@@ -194,7 +204,6 @@ def get_target_location(register_size):
 
 def write_immediate(qc, register_size, Rm, immediate):
     binary_string = int_to_binary_string(int(immediate.replace('#', '')), register_size)
-    # print(binary_string)
     for i in range(register_size):
         if binary_string[register_size - i - 1] == '1':
             qc.x(Rm[i])
@@ -228,9 +237,17 @@ def ADC(qc, register_size, ancilla_counter, additional_flags, carry_flag_counter
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
 
-    Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
-    write_immediate(qc, register_size, Op2, op3)
+    if '#' in op3:
+        Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Rm[i])
+    else:
+        Rm = get_register_location(op3, register_size, additional_flags)
+
 
     CarryRegister = [i for i in range(ancilla_counter, ancilla_counter + register_size-1)]
     ancilla_counter += register_size-1
@@ -305,9 +322,18 @@ def BIC(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
 
-    Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
-    write_immediate(qc, register_size, Op2, op3)
+    if '#' in op3:
+        Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Op2[i])
+    else:
+        Op2 = get_register_location(op3, register_size, additional_flags)
+
+
 
     print('Rd:', Rd)
     print('Rn:', Rn)
@@ -322,8 +348,18 @@ def BIC(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
 
 def CMN(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter, zero_flags, negative_flags, carry_flags, overflow_flags, Rn, Op2):
     Rn = get_register_location(Rn, register_size, additional_flags)
-    Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
+
+    if '#' in Op2:
+        Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(Op2.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Rm[i])
+    else:
+        Rm = get_register_location(Op2, register_size, additional_flags)
+
 
     CarryRegister = [i for i in range(ancilla_counter, ancilla_counter + register_size-1)]
     ancilla_counter += register_size-1
@@ -340,7 +376,6 @@ def CMN(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter,
     print('OverflowAncRegister:', OverflowAncRegister)
     print('Rd:', Rd)
 
-    write_immediate(qc, register_size, Rm, Op2)
 
 
 
@@ -465,9 +500,16 @@ def EOR(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
     
-    Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
-    write_immediate(qc, register_size, Op2, op3)
+    if '#' in op3:
+        Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Op2[i])
+    else:
+        Op2 = get_register_location(op3, register_size, additional_flags)
 
     RnAndNotOp2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
     ancilla_counter += register_size
@@ -739,9 +781,17 @@ def ORR(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
 
-    Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
-    write_immediate(qc, register_size, Op2, op3)
+    if '#' in op3:
+        Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Op2[i])
+    else:
+        Op2 = get_register_location(op3, register_size, additional_flags)
+
 
     print('Rd:', Rd)
     print('Rn:', Rn)
@@ -763,8 +813,18 @@ def ORR(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
 def RSB(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
-    Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
+
+    if '#' in op3:
+        Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Op2[i])
+    else:
+        Op2 = get_register_location(op3, register_size, additional_flags)
+
 
     AdditionAncRegister = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
     ancilla_counter += register_size
@@ -788,7 +848,6 @@ def RSB(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     print('Rd:', Rd)
 
 
-    write_immediate(qc, register_size, Op2, op3)
 
 
     # take the twos complement of Op2 (invert and add 1)
@@ -810,9 +869,19 @@ def RSB(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
 def RSC(qc, register_size, ancilla_counter, additional_flags, carry_flag_counter, carry_flags, op1, op2, op3):
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
-    Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
-    write_immediate(qc, register_size, Op2, op3)
+    
+    if '#' in op3:
+        Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Op2[i])
+    else:
+        Op2 = get_register_location(op3, register_size, additional_flags)
+
+
 
     Negative1 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
     ancilla_counter += register_size
@@ -889,9 +958,17 @@ def RSC(qc, register_size, ancilla_counter, additional_flags, carry_flag_counter
 def SBC(qc, register_size, ancilla_counter, additional_flags, carry_flag_counter, carry_flags, op1, op2, op3):
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
-    Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
-    write_immediate(qc, register_size, Op2, op3)
+    
+    if '#' in op3:
+        Op2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Op2[i])
+    else:
+        Op2 = get_register_location(op3, register_size, additional_flags)
 
     Negative1 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
     ancilla_counter += register_size
@@ -984,8 +1061,17 @@ def STR(qc, cr, register_size, additional_flags, op1, op2, op3):
 def SUB(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     Rd = get_register_location(op1, register_size, additional_flags)
     Rn = get_register_location(op2, register_size, additional_flags)
-    Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
+
+    if '#' in op3:
+        Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(op3.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Rm[i])
+    else:
+        Rm = get_register_location(op3, register_size, additional_flags)
 
     AdditionAncRegister = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
     ancilla_counter += register_size
@@ -1009,7 +1095,6 @@ def SUB(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     print('Rd:', Rd)
 
 
-    write_immediate(qc, register_size, Rm, op3)
 
 
     # take the twos complement of Op2 (invert and add 1)
@@ -1028,91 +1113,21 @@ def SUB(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
 
 
 
-# CPSR flags := Rn EOR Op2
-def TEQ2(n):
-    name = 'TEQ'
-    
-
-    ZeroFlag = QuantumRegister(1, 'zeroFlag')
-    NegativeFlag = QuantumRegister(1, 'negativeFlag')
-    CarryFlag = QuantumRegister(1, 'carryFlag')
-    OverflowFlag = QuantumRegister(1, 'overflowFlag')
-
-    Ancilla = QuantumRegister(n, 'ancilla')
-    Rn = QuantumRegister(n, 'rn')
-    Op2 = QuantumRegister(n, 'op2')
-    RnAndNotOp2 = QuantumRegister(n, 'rnAndNotOp2')
-    Op2AndNotRn = QuantumRegister(n, 'op2AndNotRn')
-    CarryRegister = QuantumRegister(n-1, 'carryAncRegister')
-    OverflowAncRegister = QuantumRegister(2, 'overflowAncRegister')
-
-
-    cr = ClassicalRegister(4)
-
-    qc = QuantumCircuit(ZeroFlag, NegativeFlag, CarryFlag, OverflowFlag, Rn, Op2, CarryRegister, OverflowAncRegister, Ancilla, RnAndNotOp2, Op2AndNotRn, cr)
-
-    # qc.x(Rn[1])
-    # qc.x(Op2[1])
-
-    # EOR
-    qc.x(Op2)
-    qc.mct([Rn, Op2], RnAndNotOp2)
-    qc.x(Op2)
-
-    qc.barrier()
-
-    qc.x(Rn)
-    qc.mct([Rn, Op2], Op2AndNotRn)
-    qc.x(Rn)
-
-    qc.barrier()
-
-    qc.append(qor(), [RnAndNotOp2, Op2AndNotRn, Ancilla])
-
-    qc.barrier()
-
-    # zero
-    qc.barrier()
-    qc.x(Ancilla)
-    qc.mct(Ancilla, ZeroFlag)
-    qc.x(Ancilla)
-
-    # negative
-    qc.barrier()
-    qc.cx(Ancilla[n-1], NegativeFlag)
-
-    # overflow
-    # occurs when the two operands have the same sign (both positive or both negative), but the result has a different sign
-    qc.barrier()
-    qc.x(Rn[1])
-    qc.x(Op2[1])
-    qc.mct([Rn[1], Op2[1], Ancilla[1]], OverflowAncRegister[0])
-    qc.x(Rn[1])
-    qc.x(Op2[1])
-
-    qc.x(Ancilla[1])
-    qc.mct([Rn[1], Op2[1], Ancilla[1]], OverflowAncRegister[1])
-    qc.x(Ancilla[1])
-
-    qc.append(qor(), [OverflowAncRegister[0], OverflowAncRegister[1], OverflowFlag])
-
-
-    qc.barrier()
-
-    qc.measure(ZeroFlag, cr[0])
-    qc.measure(NegativeFlag, cr[1])
-    qc.measure(CarryFlag, cr[2])
-    qc.measure(OverflowFlag, cr[3])
-
-    return qc, name
-
-
 
 # CPSR flags := Rn AND Op2
 def TEQ(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter, negative_flag_counter, overflow_flag_counter, zero_flags, negative_flags, overflow_flags, Rn, Op2):
     Rn = get_register_location(Rn, register_size, additional_flags)
-    Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
+
+    if '#' in Op2:
+        Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(Op2.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Rm[i])
+    else:
+        Rm = get_register_location(Op2, register_size, additional_flags)
 
     RnAndNotOp2 = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
     ancilla_counter += register_size
@@ -1133,7 +1148,6 @@ def TEQ(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter,
     print('OverflowAncRegister:', OverflowAncRegister)
     print('Rd:', Rd)
 
-    write_immediate(qc, register_size, Rm, Op2)
 
 
     # EOR
@@ -1189,8 +1203,18 @@ def TEQ(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter,
 # CPSR flags := Rn AND Op2
 def TST(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter, negative_flag_counter, overflow_flag_counter, zero_flags, negative_flags, overflow_flags, Rn, Op2):
     Rn = get_register_location(Rn, register_size, additional_flags)
-    Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
-    ancilla_counter += register_size
+
+    if '#' in Op2:
+        Rm = [i for i in range(ancilla_counter, ancilla_counter + register_size)]
+        ancilla_counter += register_size
+
+        binary_string = int_to_binary_string(int(Op2.replace('#', '')), register_size)
+        for i in range(register_size):
+            if binary_string[register_size - i - 1] == '1':
+                qc.x(Rm[i])
+    else:
+        Rm = get_register_location(Op2, register_size, additional_flags)
+
 
     OverflowAncRegister = [i for i in range(ancilla_counter, ancilla_counter + 2)]
     ancilla_counter += 2
@@ -1203,7 +1227,8 @@ def TST(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter,
     print('OverflowAncRegister:', OverflowAncRegister)
     print('Rd:', Rd)
 
-    write_immediate(qc, register_size, Rm, Op2)
+
+
 
 
     # AND
@@ -1330,7 +1355,6 @@ def get_instructions(assembly_program):
             stripped_line = line.split(';')[0].strip().replace(',', '')
             
             if stripped_line:
-                # print(stripped_line)
                 instructions.append(stripped_line.split(' '))
 
     return instructions
@@ -1339,7 +1363,9 @@ def get_instructions(assembly_program):
 def add_ancilla(instruction, register_size):
     additional_ancilla = 0
     if instruction[0] == 'ADC':
-        additional_ancilla += 2*register_size - 1
+        additional_ancilla += register_size - 1
+        if '#' in instruction[3]:
+            additional_ancilla += register_size
     elif instruction[0] == 'ADD':
         additional_ancilla += register_size - 1
         if '#' in instruction[3]:
@@ -1348,27 +1374,37 @@ def add_ancilla(instruction, register_size):
         if '#' in instruction[3]:
             additional_ancilla += register_size
     elif instruction[0] == 'CMN':
-        additional_ancilla += 3*register_size + 1
+        additional_ancilla += 2*register_size + 1
+        if '#' in instruction[2]:
+            additional_ancilla += register_size
     elif instruction[0] == 'CMP':
         additional_ancilla += 5*register_size
         if '#' in instruction[2]:
             additional_ancilla += register_size
     elif instruction[0] == 'EOR':
-        additional_ancilla += 3*register_size
+        additional_ancilla += 2*register_size
+        if '#' in instruction[3]:
+            additional_ancilla += register_size
     elif instruction[0] == 'MLA':
         additional_ancilla += register_size+7
     elif instruction[0] == 'MUL':
         additional_ancilla += register_size
     elif instruction[0] in ['SBC', 'RSC']:
-        additional_ancilla = 11*register_size - 4
+        additional_ancilla = 10*register_size - 4
+        if '#' in instruction[3]:
+            additional_ancilla += register_size
     elif instruction[0] in ['RSB', 'SUB']:
-        additional_ancilla += 5*register_size-2
+        additional_ancilla += 4*register_size-2
+        if '#' in instruction[3]:
+            additional_ancilla += register_size
     elif instruction[0] == 'TEQ':
-        additional_ancilla += 4*register_size + 2
+        additional_ancilla += 3*register_size + 2
+        if '#' in instruction[3]:
+            additional_ancilla += register_size
     elif instruction[0] == 'TST':
-        additional_ancilla += 2*register_size + 2
-
-    # print(instruction, additional_ancilla)
+        additional_ancilla += register_size + 2
+        if '#' in instruction[3]:
+            additional_ancilla += register_size
 
     return additional_ancilla
 
@@ -1736,8 +1772,8 @@ def assembly_to_qiskit(assembly_program):
 
 
 
-if __name__ == '__main__':
-    qc, name, run, register_size, decoding = assembly_to_qiskit(sys.argv[1])
+def run_assembly(filename):
+    qc, name, run, register_size, decoding = assembly_to_qiskit(filename)
 
     name = name.replace('assembly_programs/','').replace('operations/', '')
 
@@ -1762,6 +1798,11 @@ if __name__ == '__main__':
     print()
     plt.subplots_adjust(bottom=0.4)
     plt.show()
+
+
+
+if __name__ == '__main__':
+    run_assembly(sys.argv[1])
 
 
 
