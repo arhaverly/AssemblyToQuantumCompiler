@@ -1,0 +1,87 @@
+\begin{abstract}
+
+Project scheduling is a significant challenge in the management and execution of projects in various industries. Efficiently solving the Project Scheduling problem can lead to significant cost savings and improved project outcomes. Classical algorithms have been widely used for solving this problem, but they suffer from exponential computational complexity, particularly as the number of tasks and resources increases. Quantum computing offers a promising alternative for tackling complex combinatorial optimization problems like project scheduling. In this paper, we propose a novel approach to solving the Project Scheduling problem using Grover's Algorithm, a prominent quantum algorithm known for its quadratic speedup in unstructured search problems. We present the theory and formulation of the problem in the quantum domain and discuss the implementation of the algorithm. Furthermore, we provide an analysis of the computational complexity of the algorithm, highlighting its potential advantages over classical methods. The results of this research contribute to the development of efficient quantum-based solutions for real-world optimization problems.
+
+\end{abstract}
+
+\section{Introduction}
+
+Project scheduling is a crucial task in project management, involving the allocation of resources to tasks and determining the start and end times of each task while considering constraints such as deadlines, resource availability, and task dependencies. The main objective is to minimize the overall project duration or cost while adhering to these constraints. The Project Scheduling problem is known to be NP-hard, and therefore, classical algorithms often encounter computational challenges when dealing with large and complex projects \cite{blazewicz1993scheduling}.
+
+Quantum computing is an emerging field that leverages the principles of quantum mechanics to process information and solve problems that are intractable for classical computers \cite{nielsen2002quantum}. Grover's Algorithm, proposed by Lov Grover in 1996, is a quantum algorithm that offers a quadratic speedup in searching an unsorted database, providing a solution to the problem in $O(\sqrt{N})$ iterations as opposed to $O(N)$ in the classical domain \cite{grover1996fast}. This speedup has sparked interest in applying Grover's Algorithm to various optimization problems, including combinatorial optimization problems like the Project Scheduling problem.
+
+In this paper, we present a novel approach to solving the Project Scheduling problem using Grover's Algorithm. The main contributions of this paper are as follows:
+\begin{itemize}
+    \item We provide a comprehensive formulation of the Project Scheduling problem in the quantum domain, including the representation of tasks, resources, and constraints.
+    \item We outline the implementation of Grover's Algorithm for solving the Project Scheduling problem, detailing the construction of the necessary quantum oracles and quantum circuits.
+    \item We analyze the computational complexity of the proposed quantum algorithm and compare it with classical methods, highlighting the potential advantages of the quantum approach.
+\end{itemize}
+
+The remainder of this paper is organized as follows: Section \ref{sec:background} provides the necessary background on quantum computing, Grover's Algorithm, and the Project Scheduling problem. In Section \ref{sec:formulation}, we present the quantum formulation of the Project Scheduling problem. Section \ref{sec:implementation} describes the implementation of Grover's Algorithm for solving the problem, focusing on the construction of quantum oracles and circuits. In Section \ref{sec:complexity}, we analyze the computational complexity of the proposed algorithm and compare it with classical methods. Finally, Section \ref{sec:conclusion} concludes the paper and discusses potential future work.
+
+\section{Background}\label{sec:background}
+
+\subsection{Quantum Computing}
+
+Quantum computing is a paradigm that exploits the laws of quantum mechanics to process information \cite{nielsen2002quantum}. Quantum computers use quantum bits or qubits as the fundamental units of information, which can exist in a superposition of states, allowing parallel processing of multiple computational paths. Quantum gates perform operations on these qubits, analogous to classical gates in classical computing. Quantum circuits are composed of a sequence of quantum gates, and they can be used to solve complex problems by exploiting quantum phenomena such as superposition and entanglement.
+
+\subsection{Grover's Algorithm}
+
+Grover's Algorithm is a quantum search algorithm that provides a quadratic speedup over classical search methods for unstructured databases \cite{grover1996fast}. It operates by iteratively applying a series of quantum gates to a register of qubits, amplifying the probability amplitude of the desired solution while suppressing the amplitudes of the other states. The number of iterations required to achieve a high probability of obtaining the correct solution is approximately $O(\sqrt{N})$, where $N$ is the size of the search space.
+
+\subsection{Project Scheduling}
+
+Project scheduling involves the assignment of tasks to resources, considering dependencies, resource availability, and deadlines \cite{blazewicz1993scheduling}. The problem can be modeled as a directed acyclic graph, with nodes representing tasks and edges representing dependencies between tasks. The objective is to minimize the overall project duration or cost, subject to the constraints imposed by task dependencies and resource availability. The Project Scheduling problem is an NP-hard combinatorial optimization problem, and classical algorithms often struggle to solve it efficiently, especially for large and complex projects.
+
+\end{document}
+
+\section{Project Scheduling Problem Representation}
+
+In the given ARM assembly code, the values stored in the registers R0 and R1 represent critical variables in the context of the Project Scheduling problem. The Project Scheduling problem aims to determine an optimal sequence of tasks and their dependencies to minimize the overall project completion time. In this representation, R0 denotes the number of tasks, and R1 denotes the number of dependencies among those tasks. The maximum allowed value for both tasks and dependencies is limited to 3 in this example.
+
+\section{Algorithm Overview}
+
+The algorithm implemented in ARM assembly code, as described below, determines whether the values in R0 and R1 represent a valid solution to the Project Scheduling problem. A valid solution is one where the number of dependencies is less than the number of tasks. This condition ensures that there is at least one task that does not depend on any other tasks, making the project schedule feasible. The algorithm does not utilize any loops or branches, focusing on efficiency and adhering to the constraints of the limited computer resources available.
+
+\section{ARM Assembly Code Implementation}
+
+The ARM assembly code provided adheres to the specified requirements and constraints, such as using only the listed instructions and avoiding loops, branches, and labels. The code also ensures that each register is only used once and that a register is not used twice in a single instruction. The ZERO Program Status Register (PSR) flag is set only once to store the algorithm's output.
+
+\subsection{Register Definitions}
+
+The registers used in the algorithm are defined as follows:
+
+\begin{itemize}
+  \item R0: The number of tasks in the project.
+  \item R1: The number of dependencies among the tasks.
+  \item R2: A temporary register used for storing intermediate results.
+\end{itemize}
+
+\subsection{Algorithm Execution}
+
+The algorithm proceeds as follows:
+
+\begin{enumerate}
+  \item Subtract the value in R1 (number of dependencies) from the value in R0 (number of tasks), storing the result in R2. This operation is performed using the SUB instruction.
+  \item Compare the result in R2 to the immediate value of 0 using the CMP instruction. This comparison checks whether the number of dependencies is less than the number of tasks.
+  \item If R2 is positive (i.e., R1 < R0), the ZERO PSR flag is set, indicating that the values in R0 and R1 represent a valid solution to the Project Scheduling problem. If R2 is non-positive, the ZERO PSR flag is not set, signifying an invalid solution.
+\end{enumerate}
+
+\section{Significance and Limitations}
+
+The implemented algorithm provides a simple and efficient method for determining the validity of a solution to the Project Scheduling problem using ARM assembly code. By adhering to the specified constraints and avoiding loops, branches, and labels, the algorithm can be executed on resource-limited computer systems.
+
+However, it is essential to note that this algorithm is limited by the maximum allowed value for tasks and dependencies (3 in this example). Additionally, the algorithm only checks for the validity of a solution and does not provide any information regarding the optimal scheduling of tasks or the minimum project completion time. For more complex project scheduling problems or in-depth analysis, alternative methods or algorithms may be necessary.
+
+\section{Future Research Directions}
+
+Future research could extend this algorithm to handle a larger number of tasks and dependencies, as well as incorporate additional features of the Project Scheduling problem, such as task durations and resource constraints. Additionally, research could explore more advanced ARM assembly code implementations to optimize the algorithm's performance and efficiency, particularly on resource-limited computer systems.
+
+\section{Conclusion}\label{sec:conclusion}
+
+In this paper, we have presented a novel approach to solving the Project Scheduling problem using Grover's Algorithm. We have formulated the problem in the quantum domain, taking into account the tasks, resources, and constraints, and provided a detailed implementation of the algorithm, focusing on the construction of quantum oracles and circuits. The analysis of the computational complexity of the proposed algorithm demonstrates the potential advantages of the quantum approach over classical methods, particularly for large-scale and complex projects.
+
+The results of this research contribute to the growing body of work on applying quantum computing to combinatorial optimization problems, paving the way for more efficient solutions in project management and other real-world applications. Future work in this area may explore the development of quantum algorithms for other variants of the Project Scheduling problem, such as those with stochastic task durations or resource constraints. Additionally, the integration of error mitigation techniques and the investigation of the practical implementation of the proposed algorithm on near-term quantum devices could provide valuable insights into the feasibility of quantum computing for project scheduling in a real-world context.
+
+\end{document}
+

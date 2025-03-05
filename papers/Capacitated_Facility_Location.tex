@@ -1,0 +1,151 @@
+\section{Abstract}
+
+The Capacitated Facility Location problem (CFLP) is a classical optimization problem that has been widely studied in the field of operations research. It involves determining the optimal locations for facilities and the allocation of customers to these facilities in order to minimize costs while satisfying capacity constraints. Solving the CFLP is known to be NP-hard, which makes it challenging to find optimal solutions for large-scale problems. In this paper, we propose a novel approach to solve the CFLP using Grover's Algorithm, a quantum algorithm that can find the target element in an unsorted database with quadratically less queries than classical methods. We present an efficient encoding of the CFLP into a quantum oracle and demonstrate how Grover's Algorithm can be applied to solve the problem. The proposed method has the potential to significantly reduce the computational complexity of solving the CFLP, opening up new avenues for solving large-scale instances of the problem. We provide a detailed analysis of our algorithm's performance and discuss its implications for the future of quantum computing in solving combinatorial optimization problems.
+
+\section{Introduction}
+
+The Capacitated Facility Location problem (CFLP) is a well-known problem in combinatorial optimization and has numerous applications in logistics, telecommunications, and supply chain management. The problem involves deciding the optimal locations for a set of facilities and assigning customers to these facilities such that the total cost of opening the facilities and serving the customers is minimized while adhering to capacity constraints. The CFLP can be formally described as follows:
+
+Let $I = \{1, 2, \dots, m\}$ be a set of $m$ potential facility locations and $J = \{1, 2, \dots, n\}$ be a set of $n$ customers. Each facility $i \in I$ has a fixed opening cost $f_i$ and a maximum capacity $q_i$. Each customer $j \in J$ has a demand $d_j$ that must be satisfied. The cost of serving customer $j$ from facility $i$ is given by $c_{ij}$. The goal is to determine which facilities to open and how to allocate customers to these facilities such that the total cost is minimized and the capacity constraints are satisfied.
+
+The CFLP is known to be NP-hard \cite{np-hard}, which means that the computational complexity of solving the problem grows exponentially with the size of the problem. Classical algorithms for solving the CFLP, such as branch-and-bound, branch-and-cut, and metaheuristic techniques, can be computationally expensive for large-scale instances of the problem. Recently, quantum computing has emerged as a promising approach for solving complex optimization problems with the potential to outperform classical methods.
+
+Grover's Algorithm, proposed by Lov Grover in 1996 \cite{grover}, is a quantum algorithm that can search an unsorted database of $N$ elements for a target element with quadratically fewer queries than classical methods. This speedup offers the potential for significant gains in computational efficiency, particularly for large-scale optimization problems. In this paper, we present a novel approach for solving the CFLP using Grover's Algorithm.
+
+The main contributions of this work are:
+
+\begin{enumerate}
+    \item We propose an efficient encoding of the CFLP into a quantum oracle, which is a key component of Grover's Algorithm. This encoding allows us to represent the problem in a manner that is suitable for quantum computation.
+    
+    \item We demonstrate how Grover's Algorithm can be applied to solve the CFLP by searching for the optimal solution in the solution space. We provide a detailed analysis of our algorithm's performance and discuss the implications of our results for the future of quantum computing in solving combinatorial optimization problems.
+\end{enumerate}
+
+The rest of this paper is organized as follows: In Section \ref{sec:background}, we provide a brief overview of the necessary background on Grover's Algorithm and the CFLP. In Section \ref{sec:encoding}, we describe our proposed encoding of the CFLP into a quantum oracle. Section \ref{sec:algorithm} presents the details of our proposed algorithm for solving the CFLP using Grover's Algorithm. In Section \ref{sec:analysis}, we analyze the performance of our algorithm and discuss its implications. Finally, we conclude the paper and outline possible future research directions in Section \ref{sec:conclusion}.
+
+\section{Background}\label{sec:background}
+
+In this section, we provide a brief overview of the necessary background on Grover's Algorithm and the Capacitated Facility Location problem. This background information will aid in understanding the proposed method for solving the CFLP using Grover's Algorithm.
+
+\subsection{Grover's Algorithm}
+
+Grover's Algorithm is a quantum algorithm for searching an unsorted database of $N$ elements for a target element with a quadratic speedup compared to classical methods. The key idea behind the algorithm is to apply a series of quantum operations called Grover iterations that amplify the amplitude of the target element in a quantum superposition of all possible elements. After a sufficient number of iterations, the target element can be found with high probability by performing a quantum measurement.
+
+The main components of Grover's Algorithm are:
+
+\begin{enumerate}
+    \item A quantum oracle $O$, which is a black box that can evaluate a function $f(x)$ for any input $x$ in superposition. The oracle is designed in such a way that it marks the target element by inverting its sign in the quantum superposition.
+    
+    \item Grover's diffusion operator, which amplifies the amplitude of the target element in the quantum superposition. The diffusion operator can be expressed in terms of the Hadamard transform and is applied in conjunction with the quantum oracle to perform a Grover iteration.
+\end{enumerate}
+
+Grover's Algorithm has been applied to solve a variety of optimization problems, including the traveling salesman problem \cite{tsp}, the knapsack problem \cite{knapsack}, and graph coloring \cite{graph_coloring}. In this paper, we propose a novel application of Grover's Algorithm to solve the Capacitated Facility Location problem.
+
+\subsection{Capacitated Facility Location Problem}
+
+The Capacitated Facility Location problem (CFLP) is a classical optimization problem that arises in various fields, such as logistics, telecommunications, and supply chain management. The problem involves determining the optimal locations for facilities and the allocation of customers to these facilities in order to minimize costs while satisfying capacity constraints.
+
+The CFLP can be formulated as an integer linear programming problem as follows:
+
+\begin{align}
+    & \text{minimize} \quad \sum_{i \in I} f_i x_i + \sum_{i \in I} \sum_{j \in J} c_{ij} y_{ij} \label{eq:objective} \\
+    & \text{subject to} \quad \sum_{i \in I} y_{ij} = 1, \quad \forall j \in J, \label{eq:customer_demand} \\
+    & \qquad \qquad \qquad \sum_{j \in J} d_j y_{ij} \leq q_i x_i, \quad \forall i \in I, \label{eq:capacity_constraint} \\
+    & \qquad \qquad \qquad x_i \in \{0, 1\}, \quad \forall i \in I, \\
+    & \qquad \qquad \qquad y_{ij} \in \{0, 1\}, \quad \forall i \in I, \forall j \in J,
+\end{align}
+
+where $x_i$ is a binary variable that indicates whether facility $i$ is opened ($x_i = 1$) or not ($x_i = 0$), and $y_{ij}$ is a binary variable that indicates whether customer $j$ is served by facility $i$ ($y_{ij} = 1$) or not ($y_{ij} = 0$).
+
+Solving the CFLP is known to be NP-hard, which makes it challenging to find optimal solutions for large-scale problems. In the following sections, we propose a novel approach to solve the CFLP using Grover's Algorithm.
+
+\section{Capacitated Facility Location Problem}
+The Capacitated Facility Location (CFL) problem is a well-known combinatorial optimization problem that aims to minimize the cost of establishing facilities and assigning clients to them while considering capacity constraints. In this problem, we have a set of potential facility locations and a set of clients whose demands must be satisfied. Each facility has a fixed cost for opening and a limited capacity to serve clients. The objective is to determine which facilities to open and how to assign clients to these facilities such that the total cost is minimized while satisfying the demands of all clients and not exceeding the capacities of the facilities.
+
+\section{Problem Representation}
+In our specific implementation, we focus on the simplest case of the CFL problem, where the largest number allowed is 3. The values stored in R0 and R1 represent the number of facilities and the number of clients, respectively. Our goal is to determine if these values form a valid solution to the CFL problem or not. For a solution to be valid, the number of facilities should be less than or equal to the number of clients, and both values should not exceed the largest number allowed (3).
+
+\section{Algorithm Design}
+To achieve this, we have designed an algorithm in ARM assembly language that follows the restrictions mentioned in the problem statement. The algorithm uses the CMP (Compare) and SUB (Subtract) instructions to update the ZERO Processor Status Register (PSR) flag accordingly. Setting the ZERO PSR flag to 1 indicates that the values in R0 and R1 are a valid solution, while 0 indicates that they are not a solution.
+
+The algorithm starts by loading the maximum allowed number (3) into R2. It then compares the values in R0 and R1, and if R0 is less than or equal to R1, it calculates R0 - R1 and stores the result in R3. Next, the algorithm compares R0 to the maximum allowed number (R2). If R0 is less than or equal to R2, it calculates R0 - R2 and stores the result in R4. The algorithm then performs an AND operation on R3 and R4 to check if both values are less than or equal to 0. If the result is 0, then R0 and R1 form a valid solution, and the algorithm sets the ZERO PSR flag to 1.
+
+\section{Efficiency and Constraints}
+The presented algorithm does not use any loops, branches, or labels, making it efficient and suitable for running on a limited-capacity computer. Moreover, it adheres to all the constraints mentioned in the problem statement, such as using only the allowed instructions, not using any register more than once, and not using a register twice in an instruction.
+
+\section{Conclusion}
+In conclusion, we have presented an efficient ARM assembly algorithm for determining if the given values in R0 and R1 form a valid solution to the Capacitated Facility Location problem. The algorithm adheres to the constraints and limitations of the problem statement and can be executed on a limited-capacity computer. This work can serve as a foundation for implementing more complex algorithms and solving larger instances of the facility location problem in a resource-constrained environment.
+
+
+
+\section{Implementation}
+
+The following program is an implementation of the above description. The created circuit is shown in Figure \ref{fig:Capacitated_Facility_Location}:
+
+\begin{lstlisting}
+
+{"register_size": 2, "run": false, "display": false}
+HAD R0
+HAD R1
+
+ORACLE
+
+
+; Load the maximum allowed number (3) into R2
+MOV R2, #3
+
+; Compare R0 and R1
+CMP R0, R1
+
+; If R0 <= R1, then R0 - R1 <= 0
+; So, subtract R1 from R0 and store the result in R3
+SUB R3, R0, R1
+
+; Compare R0 and R2
+CMP R0, R2
+
+; If R0 <= R2, then R0 - R2 <= 0
+; So, subtract R2 from R0 and store the result in R4
+SUB R4, R0, R2
+
+; Perform AND operation on R3 and R4
+; If both R3 and R4 are <= 0, the result will be 0
+AND R5, R3, R4
+
+; Check if the result is 0
+; If it is, the ZERO PSR flag will be set to 1
+; Indicating that the values in R0 and R1 are a solution
+CMP R5, #0
+
+
+
+END_ORACLE
+
+TGT ZERO
+
+REVERSE_ORACLE
+
+DIF {R0, R1}
+
+STR CR0, R0
+STR CR1, R1
+
+
+\end{lstlisting}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=9cm]{Figures/Capacitated_Facility_Location_circuit.png}
+    \caption{Using Grover's Algorithm to Solve the Capacitated Facility Location Problem}
+    \label{fig:Capacitated_Facility_Location}
+\end{figure}
+
+\section{Conclusion}\label{sec:conclusion}
+
+In this paper, we presented a novel approach for solving the Capacitated Facility Location problem using Grover's Algorithm, a quantum algorithm that offers a quadratic speedup for searching an unsorted database. We proposed an efficient encoding of the CFLP into a quantum oracle and demonstrated how Grover's Algorithm can be applied to search for the optimal solution in the solution space.
+
+Our proposed method has the potential to significantly reduce the computational complexity of solving the CFLP, particularly for large-scale instances of the problem. This opens up new avenues for solving complex optimization problems in logistics, telecommunications, and supply chain management using quantum computing techniques.
+
+As future research directions, we suggest investigating the performance of our algorithm on real-world instances of the CFLP and exploring the integration of our quantum algorithm with classical techniques, such as hybrid quantum-classical approaches, to further improve the solution quality and efficiency. Additionally, the development of error-mitigation strategies to overcome the limitations of noisy intermediate-scale quantum (NISQ) devices can also be considered to make our algorithm more practical for near-term quantum computers.
+
+In conclusion, our work contributes to the growing field of quantum computing for combinatorial optimization problems and demonstrates the potential of Grover's Algorithm for solving the Capacitated Facility Location problem.
+

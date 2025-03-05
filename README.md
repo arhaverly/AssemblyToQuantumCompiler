@@ -1,4 +1,4 @@
-# This project was created as part of Andy Haverly's PhD Dissertation. Please forgive the messiness :)
+# This project was created as part of Andy Haverly's Ph.D. Dissertation.
 
 
 How can I use these transformations more easily?

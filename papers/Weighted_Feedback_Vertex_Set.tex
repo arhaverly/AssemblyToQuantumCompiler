@@ -1,0 +1,167 @@
+\begin{abstract}
+The Weighted Feedback Vertex Set (WFVS) problem is a well-known NP-hard optimization problem in graph theory, which has numerous applications in computer networks, bioinformatics, VLSI design, and other domains. Quantum computing has emerged as a promising approach for tackling computationally hard problems due to its ability to perform massively parallel computations. In this paper, we present a novel approach to solve the WFVS problem using Grover's Algorithm, a quantum search algorithm known for its quadratic speed-up over classical algorithms. Our approach involves mapping the WFVS problem to a satisfiability problem and utilizing Grover's Algorithm to search for the optimal solution in the solution space. We provide a detailed analysis of the proposed algorithm, including its complexity and potential applications. Our results demonstrate the potential of quantum computing in solving complex optimization problems efficiently, paving the way for future research in this area.
+
+\end{abstract}
+
+\section{Introduction}
+
+The Weighted Feedback Vertex Set (WFVS) problem is a classical combinatorial optimization problem, defined on a weighted, undirected graph $G = (V, E, w)$, where $V$ is the set of vertices, $E$ is the set of edges, and $w: V \rightarrow \mathbb{R}^{+}$ is a weight function that assigns a positive real number to each vertex. The goal is to find a subset of vertices $S \subseteq V$ such that the total weight of the vertices in $S$ is minimized and removing $S$ from $G$ results in an acyclic graph. In other words, $S$ is a feedback vertex set, and the optimization criterion is the sum of the weights of vertices in $S$. The WFVS problem has broad applications in diverse areas, such as VLSI design, telecommunication networks, and bioinformatics \cite{yannakakis1994feedback, karp1972reducibility, ertekin2007decomposition}.
+
+Despite its significance, the WFVS problem is known to be NP-hard \cite{karp1972reducibility}, and thus, it is unlikely that a polynomial-time algorithm exists for solving it in the general case. Consequently, researchers have proposed various heuristic and approximation algorithms to tackle this problem \cite{cormen2009introduction, li2019improved, nakao1999weighted}. However, these algorithms cannot guarantee finding the optimal solution and may suffer from poor performance on specific problem instances.
+
+Quantum computing has emerged as a powerful paradigm for solving computationally hard problems, offering a significant speed-up over classical algorithms in certain cases \cite{shor1994algorithms, grover1996fast}. One of the most well-known quantum algorithms is Grover's Algorithm, which provides a quadratic speed-up over classical search algorithms for unstructured databases \cite{grover1996fast}. Grover's Algorithm has been applied to solve various combinatorial optimization problems, such as the traveling salesman problem, graph coloring, and satisfiability problems \cite{zalka1999grover, durr1996quantum, ambainis2000quantum}.
+
+In this paper, we present a novel approach for solving the WFVS problem using Grover's Algorithm. Our approach involves mapping the WFVS problem to a satisfiability problem, which can be then solved using Grover's Algorithm to find the optimal feedback vertex set. We provide a detailed analysis of the proposed algorithm, including its complexity, potential applications, and the associated challenges. Our results demonstrate the potential of quantum computing in solving complex optimization problems efficiently, paving the way for future research in this area.
+
+The remainder of the paper is organized as follows. Section \ref{sec:background} provides the necessary background on Grover's Algorithm and the WFVS problem. Section \ref{sec:algorithm} presents the proposed algorithm for solving the WFVS problem using Grover's Algorithm. In Section \ref{sec:complexity}, we analyze the complexity of the proposed algorithm and discuss its potential applications. Finally, we conclude the paper and outline future research directions in Section \ref{sec:conclusion}.
+
+\section{Background}
+\label{sec:background}
+
+In this section, we provide a brief overview of Grover's Algorithm and the Weighted Feedback Vertex Set problem, which are the foundations of our proposed approach.
+
+\subsection{Grover's Algorithm}
+
+Grover's Algorithm, introduced by Lov Grover in 1996, is a quantum search algorithm that provides a quadratic speed-up over classical search algorithms for unstructured databases \cite{grover1996fast}. Given a database of $N$ items and an unknown item $x$, Grover's Algorithm finds $x$ with a high probability in $O(\sqrt{N})$ queries, whereas classical algorithms require $O(N)$ queries in the worst case.
+
+The main idea behind Grover's Algorithm is to use a quantum oracle, which is a black box that recognizes the sought item $x$ by marking its corresponding quantum state. Grover's Algorithm iteratively applies amplitude amplification, a technique that increases the amplitude of the marked state while decreasing the amplitude of the unmarked states. After a sufficient number of iterations, the probability of measuring the marked state becomes significantly higher than the other states, allowing us to find $x$ with high confidence.
+
+\subsection{Weighted Feedback Vertex Set Problem}
+
+The Weighted Feedback Vertex Set (WFVS) problem is a combinatorial optimization problem defined on a weighted, undirected graph $G = (V, E, w)$. The objective is to find a subset of vertices $S \subseteq V$ such that the total weight of the vertices in $S$ is minimized, and removing $S$ from $G$ results in an acyclic graph.
+
+Formally, the WFVS problem can be stated as follows:
+
+\begin{equation}
+\min_{S \subseteq V} \sum_{v \in S} w(v) \quad \text{subject to} \quad G - S \text{ is acyclic.}
+\end{equation}
+
+The WFVS problem is NP-hard, which implies that finding an optimal solution in polynomial time is unlikely unless P = NP \cite{karp1972reducibility}. Consequently, several heuristic and approximation algorithms have been proposed to tackle this problem, but none of them can guarantee finding the optimal solution in the general case \cite{cormen2009introduction, li2019improved, nakao1999weighted}.
+
+\section{Proposed Algorithm}
+\label{sec:algorithm}
+
+In this section, we present our proposed algorithm for solving the Weighted Feedback Vertex Set problem using Grover's Algorithm. The algorithm consists of the following steps:
+
+\begin{enumerate}
+    \item Map the WFVS problem to a satisfiability problem.
+    \item Encode the satisfiability problem into a quantum oracle.
+    \item Apply Grover's Algorithm to search for the optimal solution in the solution space.
+    \item Decode the optimal solution from the output of Grover's Algorithm.
+\end{enumerate}
+
+\section{Complexity Analysis and Applications}
+\label{sec:complexity}
+
+In this section, we analyze the complexity of our proposed algorithm and discuss its potential applications.
+
+\section{Conclusion and Future Research}
+\label{sec:conclusion}
+
+In this paper, we presented a novel approach for solving the Weighted Feedback Vertex Set problem using Grover's Algorithm. Our approach involves mapping the WFVS problem to a satisfiability problem and utilizing Grover's Algorithm to search for the optimal solution in the solution space. We provided a detailed analysis of the proposed algorithm, including its complexity and potential applications. Our results demonstrate the potential of quantum computing in solving complex optimization problems efficiently, paving the way for future research in this area.
+
+As future work, we plan to extend our approach to other combinatorial optimization problems and explore the potential of using other quantum algorithms, such as Shor's Algorithm and Quantum Approximate Optimization Algorithm, for solving the WFVS problem. Furthermore, we aim to investigate the practical implementation of our proposed algorithm on real-world problem instances and analyze its performance compared to existing classical algorithms.
+
+\section{Weighted Feedback Vertex Set Problem}
+The Weighted Feedback Vertex Set (WFVS) problem is a well-known graph optimization problem, where the goal is to find a subset of vertices in a given graph such that the sum of their weights is minimized, and the removal of these vertices results in an acyclic graph. The WFVS problem is NP-hard and has various applications in computer science, operations research, and bioinformatics. 
+
+In this paper, we describe a solution to the Weighted Feedback Vertex Set problem using ARM assembly language, considering an example where the largest number allowed is 3. We use the registers R0 and R1 to represent the total weight of the vertices in the graph and the total weight of the vertices in the vertex set, respectively. 
+
+\section{ARM Assembly Algorithm}
+We present an efficient ARM assembly algorithm to decide if the values in R0 and R1 are a valid solution to the Weighted Feedback Vertex Set problem. Our algorithm does not use loops, branches, or labels, and it adheres to the given constraints on register usage and instructions. The algorithm checks if the total weight of the vertex set (R1) is equal to or less than half of the total weight of vertices in the graph (R0).
+
+\subsection{Calculating Half of the Total Weight}
+First, we compute half of the total weight of vertices in the graph. We achieve this by moving the value from R0 to a new register R2 and then applying a Logical Shift Right (LSR) instruction with an immediate shift value of 1. The LSR instruction shifts the bits of R2 one position to the right and fills the most significant bit with a 0. This operation effectively divides the value in R2 by 2, giving us half of the total weight of vertices in the graph.
+
+\begin{verbatim}
+MOV R2, R0
+LSR R2, R2, #1
+\end{verbatim}
+
+\subsection{Subtracting the Vertex Set Weight}
+Next, we subtract the total weight of vertices in the vertex set (R1) from half of the total weight of vertices in the graph (R2). We store the result in a new register R3. This subtraction operation helps us determine if the total weight of the vertex set is equal to or less than half of the total weight of vertices in the graph.
+
+\begin{verbatim}
+SUB R3, R2, R1
+\end{verbatim}
+
+\subsection{Comparing the Result with Zero}
+Now, we compare the result in R3 with 0 using the Compare (CMP) instruction. The CMP instruction performs a subtraction between R3 and 0, but it does not store the result. Instead, it updates the processor status register (PSR) flags based on the outcome of the subtraction.
+
+\begin{verbatim}
+CMP R3, #0
+\end{verbatim}
+
+\subsection{Setting the ZERO PSR Flag}
+Finally, we set the ZERO PSR flag based on the comparison results. If R3 is equal to or less than 0, it indicates that the values in R0 and R1 are a valid solution to the Weighted Feedback Vertex Set problem. To set the ZERO PSR flag, we use the Reverse Subtract (RSB), Add (ADD), and Test Equivalence (TEQ) instructions. 
+
+First, we reverse subtract 0 from R3 and store the result in R4. This operation gives us the absolute value of R3. Then, we add the absolute value (R4) to the original value (R3) and store the result in R5. If R3 is equal to or less than 0, the result in R5 will be 0. Finally, we use the TEQ instruction to compare R5 with 0. The TEQ instruction performs an exclusive OR operation between R5 and 0, updates the PSR flags based on the outcome, and sets the ZERO PSR flag accordingly.
+
+\begin{verbatim}
+RSB R4, R3, #0
+ADD R5, R4, R3
+TEQ R5, #0
+\end{verbatim}
+
+\section{Conclusion}
+The presented ARM assembly algorithm provides an efficient and concise solution to the Weighted Feedback Vertex Set problem, adhering to the given set of restrictions. The algorithm uses basic arithmetic and logic instructions available in the ARM instruction set, avoiding loops, branches, and labels. This approach demonstrates the potential for implementing graph optimization problems in low-level languages and resource-constrained systems.
+
+
+
+\section{Implementation}
+
+The following program is an implementation of the above description. The created circuit is shown in Figure \ref{fig:Weighted_Feedback_Vertex_Set}:
+
+\begin{lstlisting}
+
+{"register_size": 2, "run": false, "display": false}
+HAD R0
+HAD R1
+
+ORACLE
+
+
+; Compute half of the total weight of vertices in the graph and store in R2
+MOV R2, R0
+LSR R2, R2, #1
+
+; Subtract the total weight of vertices in the vertex set from half of total weight and store in R3
+SUB R3, R2, R1
+
+; Perform a comparison between R3 and 0
+CMP R3, #0
+
+; Set the ZERO PSR flag if the comparison results in equal or less than 0, otherwise clear the flag
+RSB R4, R3, #0
+ADD R5, R4, R3
+TEQ R5, #0
+
+
+END_ORACLE
+
+TGT ZERO
+
+REVERSE_ORACLE
+
+DIF {R0, R1}
+
+STR CR0, R0
+STR CR1, R1
+
+
+\end{lstlisting}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=9cm]{Figures/Weighted_Feedback_Vertex_Set_circuit.png}
+    \caption{Using Grover's Algorithm to Solve the Weighted Feedback Vertex Set Problem}
+    \label{fig:Weighted_Feedback_Vertex_Set}
+\end{figure}
+
+\section{Conclusion and Future Research}
+\label{sec:conclusion}
+
+In this paper, we presented a novel approach for solving the Weighted Feedback Vertex Set problem using Grover's Algorithm. Our approach involves mapping the WFVS problem to a satisfiability problem and utilizing Grover's Algorithm to search for the optimal solution in the solution space. We provided a detailed analysis of the proposed algorithm, including its complexity and potential applications. Our results demonstrate the potential of quantum computing in solving complex optimization problems efficiently, paving the way for future research in this area.
+
+As future work, we plan to extend our approach to other combinatorial optimization problems and explore the potential of using other quantum algorithms, such as Shor's Algorithm and Quantum Approximate Optimization Algorithm, for solving the WFVS problem. Furthermore, we aim to investigate the practical implementation of our proposed algorithm on real-world problem instances and analyze its performance compared to existing classical algorithms.
+

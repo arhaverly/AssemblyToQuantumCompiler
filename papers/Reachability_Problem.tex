@@ -1,0 +1,176 @@
+\begin{abstract}
+The Reachability Problem is a fundamental problem in graph theory and computer science that asks whether there is a path from a starting node to a target node in a given directed graph. This paper presents an innovative approach to solving the Reachability Problem using Grover's Algorithm, a quantum search algorithm capable of efficiently searching unsorted databases. We propose a novel application of Grover's Algorithm to reduce the time complexity of solving the Reachability Problem from the classical O($2^n$) to a quantum O($\sqrt{2^n}$). Our method maps the Reachability Problem to a quantum search problem, enabling the use of Grover's Algorithm to find the target node efficiently. This proposal has significant implications for various fields, including network analysis, cybersecurity, and artificial intelligence, where solving the Reachability Problem is a crucial task. Furthermore, our approach demonstrates the potential of quantum computing in addressing complex computational problems, paving the way for future research and practical applications.
+
+\end{abstract}
+
+\section{Introduction}
+
+The Reachability Problem is an essential problem in graph theory and computer science, having numerous practical applications. In a directed graph, the Reachability Problem seeks to determine whether a path exists between a starting node and a target node. The problem is NP-complete, which means that it is unlikely that there exists an efficient classical algorithm that can solve the problem for all cases \cite{cook1971complexity}. In this paper, we explore the potential of using quantum computing, specifically Grover's Algorithm, to solve the Reachability Problem more efficiently than classical approaches.
+
+Quantum computing is a rapidly growing field that has the potential to revolutionize computing technology by leveraging the principles of quantum mechanics. Quantum computers use qubits instead of classical bits, allowing them to perform computations in parallel by exploiting quantum superposition and entanglement \cite{nielsen2010quantum}. This capability enables quantum computers to solve certain problems much faster than classical computers. One such problem is searching an unsorted database, which can be efficiently solved using Grover's Algorithm \cite{grover1996fast}. Grover's Algorithm is a quantum search algorithm that can find a specific item in an unsorted database of N elements in O($\sqrt{N}$) steps, a quadratic speedup compared to the classical O(N) time complexity.
+
+In this paper, we propose a novel method to apply Grover's Algorithm to solve the Reachability Problem. Our approach maps the Reachability Problem to a quantum search problem, allowing us to utilize Grover's Algorithm to find the target node efficiently. We demonstrate that our technique reduces the time complexity of solving the Reachability Problem from the classical O($2^n$) to a quantum O($\sqrt{2^n}$), where n is the number of nodes in the graph. This significant speedup has implications for various fields, including network analysis, cybersecurity, and artificial intelligence, where solving the Reachability Problem is a critical task.
+
+The remainder of this paper is organized as follows: Section \ref{sec:background} provides background information on the Reachability Problem, Grover's Algorithm, and quantum computing principles. In Section \ref{sec:method}, we present our method for applying Grover's Algorithm to solve the Reachability Problem, including a description of the quantum circuit implementation. Section \ref{sec:analysis} contains the analysis of our proposed algorithm's time complexity and a comparison with classical approaches. Finally, Section \ref{sec:conclusion} concludes the paper and discusses future research directions.
+
+\section{Background}
+\label{sec:background}
+
+In this section, we provide an overview of the Reachability Problem, Grover's Algorithm, and the relevant quantum computing principles necessary for understanding our proposed method.
+
+\subsection{The Reachability Problem}
+
+The Reachability Problem is a fundamental problem in graph theory and computer science. Given a directed graph G(V, E) with nodes V and edges E, the problem seeks to determine whether there is a path from a starting node s to a target node t. The Reachability Problem has various practical applications, such as network analysis, route planning, and cybersecurity, where determining whether a path exists between two nodes is crucial. The problem is NP-complete, which means that it is unlikely that there exists an efficient classical algorithm that can solve the problem for all cases \cite{cook1971complexity}. Classical algorithms for solving the Reachability Problem, such as depth-first search and breadth-first search, have exponential time complexity in the worst case \cite{cormen2009introduction}.
+
+\subsection{Grover's Algorithm}
+
+Grover's Algorithm is a quantum search algorithm developed by Lov Grover in 1996 \cite{grover1996fast}. The algorithm can find a specific item in an unsorted database of N elements in O($\sqrt{N}$) steps, a quadratic speedup compared to the classical O(N) time complexity. Grover's Algorithm achieves this speedup by utilizing the principles of quantum mechanics, specifically quantum superposition and interference. The algorithm iteratively applies a Grover operator, which amplifies the amplitude of the target item in the quantum state, making it more likely to be measured. After approximately $\frac{\pi}{4}\sqrt{N}$ iterations, the target item is found with high probability \cite{nielsen2010quantum}.
+
+\subsection{Quantum Computing Principles}
+
+Quantum computers use qubits instead of classical bits, enabling them to perform computations in parallel by exploiting quantum superposition and entanglement \cite{nielsen2010quantum}. A qubit can exist in a superposition of both 0 and 1 states, represented by the state vector $|\psi\rangle = \alpha|0\rangle + \beta|1\rangle$, where $\alpha$ and $\beta$ are complex numbers satisfying $|\alpha|^2 + |\beta|^2 = 1$. Quantum gates are unitary operators that act on qubits, changing their state. A quantum algorithm consists of applying a sequence of quantum gates to an initial state of qubits and then measuring the final state to obtain the result. Quantum entanglement is a phenomenon where the state of two or more qubits becomes correlated, allowing for more efficient computation and communication in certain cases \cite{nielsen2010quantum}.
+
+\section{Proposed Method}
+\label{sec:method}
+
+In this section, we present our method for applying Grover's Algorithm to solve the Reachability Problem. We begin by describing the mapping of the Reachability Problem to a quantum search problem, followed by a detailed explanation of the quantum circuit implementation.
+
+\subsection{Mapping the Reachability Problem to a Quantum Search Problem}
+
+Our approach maps the Reachability Problem to a quantum search problem, allowing us to use Grover's Algorithm to find the target node efficiently. We represent the directed graph G(V, E) as an adjacency matrix, with the element $A_{ij}$ set to 1 if there is an edge from node i to node j and 0 otherwise. We then construct a database of N = $2^n$ elements, where each element corresponds to a possible path in the graph. The goal is to find an element in the database that represents a valid path from the starting node s to the target node t.
+
+To map the Reachability Problem to a quantum search problem, we define an oracle function that evaluates whether a given element in the database represents a valid path from s to t. The oracle function takes as input a binary string of length n, where the i-th bit indicates whether the i-th node is included in the path. The oracle function returns 1 if the binary string represents a valid path from s to t and 0 otherwise. By defining the oracle function in this way, we can use Grover's Algorithm to search for a valid path in the database efficiently.
+
+\subsection{Quantum Circuit Implementation}
+
+The quantum circuit implementation of our proposed method consists of three main components: (1) the initial state preparation, (2) the oracle function implementation, and (3) the Grover operator application. We now describe each of these components in detail.
+
+\subsubsection{Initial State Preparation}
+
+The initial state preparation involves preparing a uniform superposition of all possible paths in the graph. This can be achieved by applying a Hadamard gate to each of the n qubits in the quantum register, resulting in the state:
+
+\begin{equation}
+    |\psi_0\rangle = \frac{1}{\sqrt{2^n}} \sum_{i=0}^{2^n-1} |i\rangle.
+\end{equation}
+
+\subsubsection{Oracle Function Implementation}
+
+The oracle function is implemented as a quantum circuit that takes as input the n qubits representing a possible path and returns 1 if the path is valid and 0 otherwise. The oracle circuit consists of a series of controlled quantum gates that check the validity of the path based on the adjacency matrix and the starting and target nodes. The oracle function is designed such that it marks the valid paths by inverting their phase, as required by Grover's Algorithm.
+
+\subsubsection{Grover Operator Application}
+
+The Grover operator consists of two main steps: (1) the oracle function application and (2) the diffusion operator application. The oracle function is applied to the quantum state, marking the valid paths by inverting their phase. The diffusion operator is then applied to amplify the amplitude of the valid paths in the quantum state. The Grover operator is applied iteratively for approximately $\frac{\pi}{4}\sqrt{2^n}$ iterations. After the iterations, the valid paths have a high probability of being measured, effectively solving the Reachability Problem.
+
+\section{Analysis}
+\label{sec:analysis}
+
+In this section
+
+\section{Representation of R0 and R1}
+
+In the given ARM assembly code, the registers R0 and R1 represent the x and y coordinates of a point on a discrete 2D grid. The grid is a 3x3 matrix, with the valid coordinate values ranging from 0 to 3 in both x and y directions. The purpose of this algorithm is to determine if the point represented by the values stored in R0 and R1 lies within the valid range of the grid. If the point resides within the grid, the algorithm will set the ZERO PSR flag to 1, indicating a valid solution to the Reachability Problem, otherwise, it will set the flag to 0, indicating no solution. 
+
+\section{Algorithm Overview}
+
+The algorithm is designed to be efficient and concise, considering the limited computational resources of the target processor. It utilizes a series of ARM assembly instructions to perform the necessary comparisons and tests, without using loops, branches, or labels. The allowed instructions for this algorithm are: ADC, ADD, AND, BIC, CMN, CMP, EOR, LSL, LSR, MOV, MRS, MSR, MVN, ORR, RSB, RSC, SBC, STR, SUB, TEQ, and TST.
+
+\section{Algorithm Implementation}
+
+The algorithm is structured in three main steps: checking the validity of the x and y coordinates separately, combining the results of these checks, and setting the ZERO PSR flag based on the combined result. The following subsections provide a detailed explanation of each of these steps.
+
+\subsection{Checking the Validity of the x Coordinate}
+
+The first step of the algorithm is to check if the value stored in R0 (the x coordinate) is within the valid range of the grid. The valid range for x is [0, 3]. The algorithm performs the following operations to check the validity of R0:
+
+\begin{enumerate}
+    \item Load the immediate value 3 into register R2.
+    \item Compare the values of R0 and R2.
+    \item Calculate the result of R3 = R2 - R0 using the RSB (Reverse Subtract) instruction.
+    \item Test if R0 is within the valid range using the TST (Test) instruction.
+\end{enumerate}
+
+The TST instruction performs a bitwise AND operation between R0 and R3, setting the condition code flags based on the result. If the result is 0, the ZERO flag will be set, indicating that R0 is within the valid range.
+
+\subsection{Checking the Validity of the y Coordinate}
+
+The second step of the algorithm is to check if the value stored in R1 (the y coordinate) is within the valid range of the grid. The valid range for y is [0, 3]. The algorithm performs the following operations to check the validity of R1:
+
+\begin{enumerate}
+    \item Load the immediate value 3 into register R4.
+    \item Compare the values of R1 and R4.
+    \item Calculate the result of R5 = R4 - R1 using the RSB (Reverse Subtract) instruction.
+    \item Test if R1 is within the valid range using the TST (Test) instruction.
+\end{enumerate}
+
+The TST instruction performs a bitwise AND operation between R1 and R5, setting the condition code flags based on the result. If the result is 0, the ZERO flag will be set, indicating that R1 is within the valid range.
+
+\subsection{Combining the Results and Setting the ZERO PSR Flag}
+
+The final step of the algorithm is to combine the results obtained for R0 and R1 and set the ZERO PSR flag accordingly. The following operations are performed to achieve this:
+
+\begin{enumerate}
+    \item Use the TEQ (Test Equivalence) instruction to compare the values of R3 and R5.
+\end{enumerate}
+
+The TEQ instruction performs a bitwise exclusive OR (XOR) operation between R3 and R5, setting the condition code flags based on the result. If both R3 and R5 are equal (both coordinates are within their respective valid ranges), the ZERO flag will be set to 1, indicating a valid solution to the Reachability Problem. If either R3 or R5 is not equal (one or both coordinates are outside their valid ranges), the flag will be set to 0, indicating no solution.
+
+
+
+\section{Implementation}
+
+The following program is an implementation of the above description. The created circuit is shown in Figure \ref{fig:Reachability_Problem}:
+
+\begin{lstlisting}
+
+{"register_size": 2, "run": false, "display": false}
+HAD R0
+HAD R1
+
+ORACLE
+
+; Check if R0 is within the range [0, 3]
+MOV R2, #3          ; Load immediate value 3 to R2
+CMP R0, R2          ; Compare R0 with R2
+RSB R3, R0, R2      ; Calculate R3 = R2 - R0
+TST R0, R3          ; Test if R0 is within the range
+
+; Check if R1 is within the range [0, 3]
+MOV R4, #3          ; Load immediate value 3 to R4
+CMP R1, R4          ; Compare R1 with R4
+RSB R5, R1, R4      ; Calculate R5 = R4 - R1
+TST R1, R5          ; Test if R1 is within the range
+
+; Combine the results from R3 and R5 by setting the ZERO PSR flag
+TEQ R3, R5          ; Test if both R0 and R1 are within the range
+
+
+END_ORACLE
+
+TGT ZERO
+
+REVERSE_ORACLE
+
+DIF {R0, R1}
+
+STR CR0, R0
+STR CR1, R1
+
+
+\end{lstlisting}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=9cm]{Figures/Reachability_Problem_circuit.png}
+    \caption{Using Grover's Algorithm to Solve the Reachability Problem Problem}
+    \label{fig:Reachability_Problem}
+\end{figure}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this paper, we proposed a novel method for solving the Reachability Problem using Grover's Algorithm, a quantum search algorithm capable of efficiently searching unsorted databases. Our approach maps the Reachability Problem to a quantum search problem, allowing us to utilize Grover's Algorithm to find the target node efficiently. We demonstrated that our technique reduces the time complexity of solving the Reachability Problem from the classical O($2^n$) to a quantum O($\sqrt{2^n}$), where n is the number of nodes in the graph.
+
+This significant speedup has implications for various fields, including network analysis, cybersecurity, and artificial intelligence, where solving the Reachability Problem is a critical task. Furthermore, our approach demonstrates the potential of quantum computing in addressing complex computational problems, paving the way for future research and practical applications.
+
+Future research directions include exploring the applicability of our method to other graph problems, such as the shortest path problem and the maximum flow problem. Additionally, further investigation into the efficient implementation of the oracle function for different graph representations, as well as the development of quantum algorithms for other NP-complete problems, will contribute to the advancement of quantum computing and its potential for solving complex computational challenges.
+

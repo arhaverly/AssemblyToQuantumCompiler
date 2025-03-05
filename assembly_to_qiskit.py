@@ -28,7 +28,6 @@ What about classical memory?
 We should track the classical memory too
 
 
-
 Implementing Grover's Algorithm
 Added gates:
     HAD: applies the Hadamard gate to each qubit in the register
@@ -40,10 +39,8 @@ Added gates:
 We want to know where the oracle is and what the reverse of it is.
 
 
-
-
 Branching
-B: Precompiler classically unravel the loop
+B: Precompiler classically unravel the loop (TODO)
 
 BEQ, BNE: Might be possible to classically unravel the loop
     Easy: If it's a FOR loop, just unravel the set number of times
@@ -52,7 +49,6 @@ BEQ, BNE: Might be possible to classically unravel the loop
         but then need to carry down the registers if the value is not set.
         We can carry down the registers by using controlled gates too.
 '''
-
 
 #initialization
 import matplotlib.pyplot as plt
@@ -65,11 +61,9 @@ import sys
 import io
 
 
-
 # Redirect standard error
 original_stderr = sys.stderr
 sys.stderr = io.StringIO()
-
 
 # importing Qiskit
 from qiskit import IBMQ, Aer, QuantumCircuit, ClassicalRegister, QuantumRegister, execute
@@ -77,15 +71,11 @@ from qiskit.providers.ibmq import least_busy
 from qiskit.circuit.library import IntegerComparator
 from qiskit.providers.aer import QasmSimulator
 
-
 from qiskit.circuit.library import MCMT, CSwapGate, CHGate
-
-
 
 # import basic plot tools
 from qiskit.visualization import plot_histogram
 from qiskit.tools.monitor import job_monitor
-
 
 # Restore standard error
 sys.stderr = original_stderr
@@ -123,6 +113,8 @@ allowed_operations = {
     'MCT',
     'BAR'
 }
+
+first_target = True
 
 
 # TODO: create a precompiler that unravels branches
@@ -553,11 +545,18 @@ def XXX(qc, register_size, additional_flags, op1):
 def TGT(qc, register_size, additional_flags, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter, zero_flags, negative_flags, carry_flags, overflow_flags, op1):
     target = get_target_location(register_size)
 
-    qc.x(target)
-    qc.h(target)
+    global first_target
+
+    if first_target:
+        qc.x(target)
+        qc.h(target)
+        first_target = False
+
 
     if op1 == 'ZERO':
+        # qc.x(zero_flags[zero_flag_counter])
         qc.cx(zero_flags[zero_flag_counter], target)
+        # qc.x(zero_flags[zero_flag_counter])
     elif op1 == 'NEGATIVE':
         qc.cx(negative_flags[negative_flag_counter], target)
     elif op1 == 'CARRY':
@@ -589,6 +588,8 @@ def DIF(qc, register_size, additional_flags, rlist):
     print(rlist)
     for register in rlist:
         qubits.extend(get_register_location(register.replace('{','').replace('}',''), register_size, additional_flags))
+
+    # qubits.append(0)
 
     print(qubits)
 
@@ -688,6 +689,7 @@ def MOV(qc, register_size, additional_flags, op1, op2):
 
     if '#' in op2:
         binary_string = int_to_binary_string(int(op2.replace('#', '')), register_size)
+        print(binary_string)
         for i in range(register_size):
             if binary_string[register_size - i - 1] == '1':
                 qc.x(Rd[i])
@@ -764,6 +766,10 @@ def MOV(qc, register_size, additional_flags, op1, op2):
         for i in range(register_size):
             if binary_string[register_size - i - 1] == '1':
                 qc.x(Rd[i])
+    else:
+        Rn = get_register_location(op2, register_size, additional_flags)
+        for i in range(register_size):
+            qc.cnot(Rn[i], Rd[i])
 
 
 def MVN(qc, register_size, additional_flags, op1, op2):
@@ -775,6 +781,11 @@ def MVN(qc, register_size, additional_flags, op1, op2):
         for i in range(register_size):
             if binary_string[register_size - i - 1] == '0':
                 qc.x(Rd[i])
+    else:
+        Rn = get_register_location(op2, register_size, additional_flags)
+        for i in range(register_size):
+            qc.x(Rd[i])
+            qc.cnot(Rn[i], Rd[i])
 
 
 def ORR(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
@@ -803,7 +814,6 @@ def ORR(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3):
     qc.x(Rn)
     qc.x(Op2)
     qc.x(Rd)
-
 
     return ancilla_counter
 
@@ -1239,7 +1249,7 @@ def TST(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter,
     qc.barrier()
     qc.x(Rd)
     qc.mct(Rd, zero_flags[zero_flag_counter])
-    qc.x(Rd)
+    # qc.x(Rd)
 
     # negative
     qc.barrier()
@@ -1274,7 +1284,17 @@ def get_instructions(assembly_program):
             stripped_line = line.split(';')[0].strip().replace(',', '')
             
             if stripped_line:
-                instructions.append(stripped_line.split(' '))
+                tokens = stripped_line.split(' ')
+                if '' in tokens:
+                    tokens.remove('')
+
+                if ' ' in tokens:
+                    tokens.remove(' ')
+
+                if '\t' in tokens:
+                    tokens.remove('\t')
+
+                instructions.append(tokens)
 
     return instructions
 
@@ -1318,11 +1338,11 @@ def add_ancilla(instruction, register_size):
             additional_ancilla += register_size
     elif instruction[0] == 'TEQ':
         additional_ancilla += 3*register_size + 2
-        if '#' in instruction[3]:
+        if '#' in instruction[2]:
             additional_ancilla += register_size
     elif instruction[0] == 'TST':
         additional_ancilla += register_size + 2
-        if '#' in instruction[3]:
+        if '#' in instruction[2]:
             additional_ancilla += register_size
 
     return additional_ancilla
@@ -1417,11 +1437,23 @@ def get_parameters(assembly_program):
 
 
 def reverse_oracle(qc, oracle_qc):
+    print("Reverse Oracle")
     print([i for i in range(qc.num_qubits)])
     reverse_oracle_qc = oracle_qc.inverse()
     print(qc.num_qubits)
     print(reverse_oracle_qc.num_qubits)
     reverse_oracle_qc.name = 'REV'
+
+    # qc.barrier()
+    # qc.barrier()
+    # # decomposed_reverse_oracle = reverse_oracle_qc.decompose()
+    # for instr, qargs, cargs in reverse_oracle_qc.data:
+    #     print(instr, [qc.qubits[i.index+1] for i in qargs], cargs)
+    #     qc.append(instr, [qc.qubits[i.index+1] for i in qargs], cargs)
+    # qc.barrier()
+    # qc.barrier()
+
+
     qc.append(reverse_oracle_qc, [i for i in range(qc.num_qubits)])
 
 
@@ -1438,6 +1470,8 @@ def evaluate_instruction(instruction, qc, cr, in_oracle, register_size, ancilla_
         op3 = instruction[3]
     if len(instruction) > 4:
         op4 = instruction[4]
+
+    print("in_oracle", in_oracle)
 
     if instruction[0] == 'ADC':
         carry_flag_counter += 1
@@ -1461,6 +1495,7 @@ def evaluate_instruction(instruction, qc, cr, in_oracle, register_size, ancilla_
         negative_flag_counter += 1
         carry_flag_counter += 1
         overflow_flag_counter += 1
+        print(carry_flag_counter, carry_flags)
         ancilla_counter = CMP(qc, register_size, ancilla_counter, additional_flags, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter, zero_flags, negative_flags, carry_flags, overflow_flags, op1, op2)
     elif instruction[0] == 'EOR':
         ancilla_counter = EOR(qc, register_size, ancilla_counter, additional_flags, op1, op2, op3)
@@ -1544,7 +1579,7 @@ def evaluate_instruction(instruction, qc, cr, in_oracle, register_size, ancilla_
     else:
         raise ValueError('Invalid Instruction')
 
-    return in_oracle, ancilla_counter
+    return in_oracle, ancilla_counter, targets_counter, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter
 
 
 
@@ -1554,7 +1589,6 @@ def decode(register_size, decoding, results):
         return
 
     sorted_results = sorted(results.items(), key=lambda x: x[1], reverse=True)
-
 
     for result in sorted_results:
         print('# Measurements:', result[1])
@@ -1568,10 +1602,13 @@ def decode(register_size, decoding, results):
 
 
 def assembly_to_qiskit(assembly_program):
+    # debug_memory = [1, 5,6,7,8,9,10,14]
+    debug_memory = [0,1,2,3]
     parameters = get_parameters(assembly_program)
     register_size = parameters.get('register_size', 2)
     decoding = parameters.get('decoding', None)
     run = parameters.get('run', True)
+    display = parameters.get('display', True)
     instructions = get_instructions(assembly_program)
     name = assembly_program.split('.')[0]
     targets = None
@@ -1613,11 +1650,13 @@ def assembly_to_qiskit(assembly_program):
 
 
     qr = QuantumRegister(ancilla_counter - zero_flags_count - negative_flags_count - carry_flags_count - overflow_flags_count - targets_count + num_ancilla, 'qr')
-    
+
     if classical_memory_needed == 0:
         raise Exception('Must use at least one STR or STM operation')
 
     cr = ClassicalRegister(classical_memory_needed)
+    # cr = ClassicalRegister(len(debug_memory))
+
 
     if carry_flags_count > 0:
         if targets_count > 0:
@@ -1681,27 +1720,31 @@ def assembly_to_qiskit(assembly_program):
             reverse_oracle(qc, oracle_qc)
         else:
             if in_oracle:
-                in_oracle, disregard = evaluate_instruction(instruction, oracle_qc, cr, in_oracle, register_size, ancilla_counter, additional_flags, targets_counter, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter, zero_flags, negative_flags, carry_flags, overflow_flags)
+                in_oracle, disregard0, disregard1, disregard2, disregard3, disregard4, disregard5 = evaluate_instruction(instruction, oracle_qc, cr, in_oracle, register_size, ancilla_counter, additional_flags, targets_counter, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter, zero_flags, negative_flags, carry_flags, overflow_flags)
 
-            in_oracle, ancilla_counter = evaluate_instruction(instruction, qc, cr, in_oracle, register_size, ancilla_counter, additional_flags, targets_counter, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter, zero_flags, negative_flags, carry_flags, overflow_flags)
+            in_oracle, ancilla_counter, targets_counter, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter = evaluate_instruction(instruction, qc, cr, in_oracle, register_size, ancilla_counter, additional_flags, targets_counter, zero_flag_counter, negative_flag_counter, carry_flag_counter, overflow_flag_counter, zero_flags, negative_flags, carry_flags, overflow_flags)
 
-            
+    # for i in range(len(debug_memory)):
+    #     qc.measure(debug_memory[i], i)
 
-    return qc, name, run, register_size, decoding
+    return qc, name, run, display, register_size, decoding
 
 
 
 def run_assembly(filename):
-    qc, name, run, register_size, decoding = assembly_to_qiskit(filename)
+    qc, name, run, display, register_size, decoding = assembly_to_qiskit(filename)
 
-    name = name.replace('assembly_programs/','').replace('operations/', '')
+    name = name.replace('assembly_programs/','').replace('operations/', '').replace('automatically_generated/', '')
+
+    # decomposed_qc = qc.decompose()
 
     qc.draw(output='mpl', filename='Figures/'+name+'_circuit.png', fold=140)
 
 
+
     if run:
         qasm_simulator = Aer.get_backend('qasm_simulator')
-        shots = 1000
+        shots = 2000
         results = execute(qc, backend=qasm_simulator, shots=shots).result()
         answer = results.get_counts()
         
@@ -1709,15 +1752,27 @@ def run_assembly(filename):
         decode(register_size, decoding, answer)
         print()
 
+        # Redirect standard error
+        original_stderr = sys.stderr
+        sys.stderr = io.StringIO()
 
         hist = plot_histogram(answer)
+        plt.subplots_adjust(bottom=0.4)
         plt.savefig('Figures/'+name+'_hist.png')
 
+        # Restore standard error
+        sys.stderr = original_stderr
 
-    print()
-    plt.subplots_adjust(bottom=0.4)
-    plt.show()
+    if display:
+        # Redirect standard error
+        original_stderr = sys.stderr
+        sys.stderr = io.StringIO()
 
+        print()
+        plt.show()
+
+        # Restore standard error
+        sys.stderr = original_stderr
 
 
 if __name__ == '__main__':

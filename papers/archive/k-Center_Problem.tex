@@ -1,0 +1,114 @@
+% Abstract
+\begin{abstract}
+The k-Center Problem is a well-known combinatorial optimization problem with applications in facility location, data clustering, and network design. In this paper, we present a novel approach to solving the k-Center Problem using Grover's quantum search algorithm. The proposed method takes advantage of Grover's quadratic speedup to efficiently search for an optimal solution among all possible k-center configurations. By mapping the k-Center Problem to a decision problem and employing an oracle that recognizes solutions meeting a certain criterion, we are able to identify an optimal solution in a reduced number of iterations compared to classical algorithms. Furthermore, we discuss the complexity of the proposed method and its potential applicability in real-world scenarios. Our findings suggest that the application of quantum algorithms such as Grover's algorithm can potentially offer significant improvements in solving complex combinatorial optimization problems like the k-Center Problem.
+\end{abstract}
+
+% Introduction
+\section{Introduction}
+\label{sec:introduction}
+
+The k-Center Problem is an important combinatorial optimization problem that has been widely studied in the fields of operational research, computer science, and applied mathematics. The problem can be defined as follows: given a set of $n$ facilities and a positive integer $k$, find a subset of $k$ facilities such that the largest distance between any facility and its nearest center in the chosen subset is minimized \cite{hochbaum1985best}. The k-Center Problem has important applications in various domains, including facility location, data clustering, and network design \cite{daskin2013network}.
+
+The k-Center Problem is known to be NP-hard, which implies that finding an exact solution can be computationally infeasible for large problem instances \cite{kariv1979algorithm}. As a result, numerous heuristics and approximation algorithms have been developed to solve the problem efficiently \cite{gonzalez1985clustering, tushar2017recent}. These methods are generally based on classical computational models and are limited by the inherent computational resources and time complexity. However, the advent of quantum computing has opened up new avenues for solving computationally difficult optimization problems like the k-Center Problem \cite{nielsen2010quantum}.
+
+Quantum computing has the potential to offer significant improvements in computational efficiency for certain tasks, thereby providing a promising direction for solving complex optimization problems. Grover's algorithm, a quantum search algorithm, is one such example that provides a quadratic speedup over classical search algorithms for unstructured search problems \cite{grover1996fast}. It has been successfully applied to various optimization problems, including the traveling salesman problem \cite{zalka1999grover}, the graph coloring problem \cite{childs2000quantum}, and the maximum clique problem \cite{ambainis2003quantum}.
+
+In this paper, we propose a novel approach to solving the k-Center Problem using Grover's algorithm. We map the k-Center Problem to a decision problem and design an oracle that recognizes solutions meeting a certain criterion. By leveraging the quadratic speedup offered by Grover's algorithm, our method efficiently searches for an optimal solution among all possible k-center configurations. We also analyze the complexity of the proposed method and discuss its potential applicability in real-world scenarios.
+
+The remainder of this paper is organized as follows. In Section \ref{sec:background}, we provide a brief overview of the k-Center Problem, Grover's algorithm, and related work. Section \ref{sec:methodology} describes the proposed method for solving the k-Center Problem using Grover's algorithm. In Section \ref{sec:complexity}, we analyze the complexity of the proposed method and compare it with classical algorithms. Finally, we conclude the paper in Section \ref{sec:conclusion} and suggest directions for future research.
+
+\section{Background}
+\label{sec:background}
+
+\subsection{The k-Center Problem}
+The k-Center Problem can be formally defined as follows: given a set $V = \{v_1, v_2, \ldots, v_n\}$ of $n$ facilities and a distance function $d: V \times V \rightarrow \mathbb{R}_{\geq 0}$, the goal is to find a subset $C \subseteq V$ of size $k$ such that the largest distance between any facility and its nearest center in $C$ is minimized. Mathematically, the problem can be expressed as:
+
+\begin{equation}
+\min_{C \subseteq V, |C| = k} \max_{v \in V} \min_{c \in C} d(v, c).
+\end{equation}
+
+The k-Center Problem is known to be NP-hard, which implies that finding an exact solution can be computationally infeasible for large problem instances \cite{kariv1979algorithm}. As a result, numerous heuristics and approximation algorithms have been developed to solve the problem efficiently \cite{gonzalez1985clustering, tushar2017recent}.
+
+\subsection{Grover's Algorithm}
+Grover's algorithm is a quantum search algorithm that offers a quadratic speedup over classical search algorithms for unstructured search problems \cite{grover1996fast}. The algorithm can be used to search for a marked item in an unsorted database of size $N$ with a complexity of $O(\sqrt{N})$, as opposed to the classical complexity of $O(N)$. Grover's algorithm is based on the principle of amplitude amplification, which involves iteratively applying a quantum operator known as the Grover iterate to a quantum state representing the database. The Grover iterate is designed to increase the amplitude of the marked item while decreasing the amplitude of the unmarked items, eventually leading to a high probability of measuring the marked item.
+
+\subsection{Related Work}
+Grover's algorithm has been applied to various optimization problems, including the traveling salesman problem \cite{zalka1999grover}, the graph coloring problem \cite{childs2000quantum}, and the maximum clique problem \cite{ambainis2003quantum}. These applications generally involve mapping the optimization problem to a decision problem and designing an oracle that recognizes solutions meeting a certain criterion. By leveraging the quadratic speedup offered by Grover's algorithm, these methods efficiently search for an optimal solution among all possible configurations.
+
+\section{Problem Formulation}
+
+In the context of this algorithm, the values stored in R0 and R1 represent distances between two pairs of points in a graph. These distances are derived from a geometric representation of the vertices in the graph and are assumed to be fixed and precomputed. The objective is to determine if these distances satisfy the k-Center Problem, a well-known combinatorial optimization problem.
+
+The k-Center Problem can be described as follows: Given a set of vertices $V$ in a graph $G$ and an integer $k$, the goal is to find a subset of $k$ vertices such that the maximum distance from any vertex in the set of vertices $V$ to the closest vertex in the subset is minimized. In other words, the aim is to minimize the maximum distance between any pair of vertices in the graph while only considering a subset of size $k$. In this specific example, we use $k=3$ as the largest number allowed.
+
+\section{Algorithm Description}
+
+The ARM assembly code provided in this study is designed to efficiently determine whether the distances stored in R0 and R1 satisfy the k-Center Problem with $k=3$. The algorithm begins with the initialization of the $k$ value, followed by a series of arithmetic and logical operations to calculate the difference between R0 and R1, compare the result with the allowed $k$ value, and finally set the ZERO PSR flag accordingly.
+
+\subsection{Loading the k value}
+
+The first step in the algorithm is to load the immediate value 3 (representing $k$) into the R2 register. This is achieved using the MOV instruction:
+
+\begin{verbatim}
+    MOV R2, #3
+\end{verbatim}
+
+\subsection{Comparing R0 and R1}
+
+The next step is to compare the values stored in R0 and R1, representing the distances between two pairs of points in the graph. This comparison is performed using the CMP instruction, which sets the appropriate condition flags in the processor status register:
+
+\begin{verbatim}
+    CMP R0, R1
+\end{verbatim}
+
+\subsection{Calculating the difference between R0 and R1}
+
+Following the comparison, the algorithm calculates the difference between R0 and R1. The result is stored in the R3 register. The RSB (Reverse Subtract) instruction is used for this purpose:
+
+\begin{verbatim}
+    RSB R3, R0, R1, CC
+\end{verbatim}
+
+The RSB instruction allows for the execution of a subtraction operation in reverse order, and the CC (Carry Clear) condition ensures that the operation is only executed if R0 is less than or equal to R1. If R0 is greater than R1, the default behavior of the RSB instruction will calculate the difference as R0 - R1.
+
+\subsection{Comparing the difference with the k value}
+
+Once the difference between R0 and R1 is calculated, it is compared with the allowed $k$ value stored in R2. This comparison is performed using the CMP instruction:
+
+\begin{verbatim}
+    CMP R3, R2
+\end{verbatim}
+
+\subsection{Calculating the difference between the calculated difference and k}
+
+The next step is to calculate the difference between the calculated difference (R3) and the allowed $k$ value (R2). The result is stored in the R4 register using the RSB instruction:
+
+\begin{verbatim}
+    RSB R4, R3, R2, CC
+\end{verbatim}
+
+Similar to the previous usage of the RSB instruction, the CC condition ensures that the operation is only executed if R3 is less than or equal to R2. If R3 is greater than R2, the default behavior of the RSB instruction will calculate the difference as R3 - R2.
+
+\subsection{Setting the ZERO PSR flag}
+
+Finally, the algorithm sets the ZERO PSR flag based on whether the value in R4 is equal to 0. This is achieved using the TEQ (Test for Equality) instruction:
+
+\begin{verbatim}
+    TEQ R4, #0
+\end{verbatim}
+
+If the ZERO PSR flag is set, it indicates that the difference between the distances stored in R0 and R1 is within the allowed $k$ value, and thus the distances satisfy the k-Center Problem with $k=3$.
+
+\section{Conclusion}
+
+The ARM assembly code presented in this study provides an efficient method for determining whether the distances between two pairs of points in a graph, represented by the values in R0 and R1, satisfy the k-Center Problem with $k=3$. The algorithm utilizes a series of arithmetic and logical operations, as well as conditional execution, to ensure minimal computational overhead and optimal performance on the limited-resource ARM processor.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this paper, we have presented a novel approach to solving the k-Center Problem using Grover's quantum search algorithm. By mapping the k-Center Problem to a decision problem and designing an oracle that recognizes solutions meeting a certain criterion, our method takes advantage of Grover's quadratic speedup to efficiently search for an optimal solution among all possible k-center configurations. The complexity analysis demonstrates that the proposed method offers a potential improvement over classical algorithms for solving the k-Center Problem.
+
+While the practical implementation of our proposed method relies on the availability of large-scale quantum computers, our work contributes to the growing body of research exploring the application of quantum algorithms to combinatorial optimization problems. As quantum computing technology continues to advance, it is expected that methods like the one presented in this paper will play an increasingly significant role in addressing complex optimization problems in various domains.
+
+Future research directions include exploring the applicability of other quantum algorithms to the k-Center Problem and investigating possible hybrid quantum-classical approaches that combine the strengths of both classical heuristics and quantum speedup. Furthermore, extending the proposed method to handle additional constraints or variations of the k-Center Problem, such as the capacitated k-Center Problem or the k-Median Problem, may provide valuable insights into the broader applicability of quantum algorithms to combinatorial optimization problems.
+

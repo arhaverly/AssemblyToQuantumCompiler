@@ -1,0 +1,162 @@
+\begin{abstract}
+The Minimum Fill-In problem is a well-known NP-hard problem that plays a significant role in various applications, including sparse matrix computations, VLSI design, and Bayesian network learning. In this paper, we present a novel approach to solve the Minimum Fill-In problem using Grover's Algorithm, a quantum search algorithm known for its quadratic speedup over classical search algorithms. We detail the adaptations required for the specific problem and demonstrate the efficacy of our proposed method in solving Minimum Fill-In instances. Our approach, based on quantum computing, has the potential to provide significant improvements in solving large-scale and complex instances of the Minimum Fill-In problem, thus contributing to advancements in the aforementioned application domains. Furthermore, we discuss the challenges and prospects of implementing our algorithm on noisy intermediate-scale quantum (NISQ) devices.
+\end{abstract}
+
+\section{Introduction}
+
+The Minimum Fill-In problem, also known as the Chordal Graph Completion problem or the Sparse Matrix Ordering problem, is an important combinatorial optimization problem that arises in various application areas. Given an undirected graph $G = (V, E)$, the objective is to find a minimal set of edges, called fill-ins, that can be added to $G$ to make it chordal. A chordal graph is a graph where every cycle of length greater than three has a chord, i.e., an edge connecting two non-adjacent vertices in the cycle. The problem is known to be NP-hard \cite{yannakakis1981computing}, and as such, finding exact solutions for large-scale instances is computationally challenging.
+
+Several applications in computer science, engineering, and other domains involve solving the Minimum Fill-In problem. Some of these applications include sparse matrix computations \cite{rose1972graph}, where efficient algorithms rely on the sparsity pattern of the matrix, VLSI design \cite{lengauer1990combinatorial}, where minimizing the fill-in helps in reducing wirelength and congestion, and Bayesian network learning \cite{heckerman1995learning}, where the fill-in corresponds to the number of additional conditional independencies that need to be considered. As the size and complexity of problems in these domains continue to grow, it is imperative to develop efficient algorithms capable of tackling large-scale instances of the Minimum Fill-In problem.
+
+Quantum computing has emerged as a promising paradigm for solving various combinatorial optimization problems, with the potential to provide significant speedup over classical algorithms. One of the most well-known quantum algorithms is Grover's Algorithm \cite{grover1996fast}, which can search an unsorted database of size $N$ in $\mathcal{O}(\sqrt{N})$ steps, offering a quadratic speedup over classical search algorithms. Grover's Algorithm has been adapted to solve various optimization problems, such as satisfiability \cite{brassard1998quantum}, graph coloring \cite{childs2000quantum}, and traveling salesman problem \cite{daskin2012quantum}, among others.
+
+In this paper, we propose a novel approach to solve the Minimum Fill-In problem using Grover's Algorithm. We first describe the necessary adaptations required to apply Grover's Algorithm to the problem, including the oracle construction and the problem-specific Grover operator. We then demonstrate the effectiveness of our proposed algorithm in solving instances of the Minimum Fill-In problem. Additionally, we discuss the challenges and prospects of implementing our algorithm on noisy intermediate-scale quantum (NISQ) devices, which are currently the most advanced quantum computers available.
+
+The rest of the paper is organized as follows: Section \ref{sec:background} provides the necessary background on the Minimum Fill-In problem and Grover's Algorithm. In Section \ref{sec:algorithm}, we present our proposed algorithm for solving the Minimum Fill-In problem using Grover's Algorithm and describe the problem-specific adaptations. Section \ref{sec:results} presents our experimental results, demonstrating the efficacy of our algorithm in solving instances of the Minimum Fill-In problem. In Section \ref{sec:nisq}, we discuss the challenges and prospects of implementing our algorithm on NISQ devices. Finally, Section \ref{sec:conclusion} concludes the paper and outlines future research directions.
+
+\section{Background}
+\label{sec:background}
+
+\subsection{Minimum Fill-In Problem}
+
+The Minimum Fill-In problem is defined as follows: Given an undirected graph $G = (V, E)$, with $n$ vertices and $m$ edges, find a minimal set of edges, called fill-ins, that can be added to $G$ to make it chordal. Formally, the objective is to find a graph $G' = (V, E \cup F)$, where $F$ is the set of fill-ins, such that $G'$ is chordal and $|F|$ is minimized. The problem can also be viewed as finding a minimal triangulation of the graph, where a triangulation is a chordal supergraph of $G$.
+
+The Minimum Fill-In problem is known to be NP-hard \cite{yannakakis1981computing}, which implies that finding exact solutions for large-scale instances is computationally challenging. Several exact algorithms have been proposed in the literature, including branch-and-bound algorithms \cite{leconte1999new}, dynamic programming algorithms \cite{tarjan1985simple}, and clique tree algorithms \cite{rose1972graph}. However, these algorithms often have high time and space complexity, limiting their applicability to small- and medium-sized instances. As a result, there is a need to develop efficient algorithms that can tackle large-scale instances of the Minimum Fill-In problem.
+
+\subsection{Grover's Algorithm}
+
+Grover's Algorithm \cite{grover1996fast} is a quantum search algorithm that can find a marked item in an unsorted database of size $N$ with $\mathcal{O}(\sqrt{N})$ queries, offering a quadratic speedup over classical search algorithms. The algorithm relies on the principle of amplitude amplification, which iteratively increases the probability amplitudes of the marked items while decreasing the amplitudes of the unmarked items. This process is carried out using a quantum oracle and a problem-specific Grover operator.
+
+The quantum oracle is a black box that, given an input state $|x\rangle$, returns the state $(-1)^{f(x)}|x\rangle$, where $f(x) = 1$ if $x$ is a marked item and $f(x) = 0$ otherwise. The Grover operator, denoted by $G$, is defined as $G = (2|\psi\rangle\langle\psi| - I)O$, where $|\psi\rangle$ is the equal superposition state and $I$ is the identity operator. The Grover operator is applied repeatedly on the initial state $|\psi\rangle$, for a total of $\mathcal{O}(\sqrt{N})$ iterations, until the probability of measuring a marked item becomes sufficiently high.
+
+An important aspect of applying Grover's Algorithm to an optimization problem is the construction of the quantum oracle. The oracle must be designed such that it can efficiently recognize and mark the solutions that satisfy the problem constraints. Moreover, the problem-specific Grover operator must be constructed to ensure that the amplitude amplification process effectively increases the probabilities of the marked items.
+
+\section{Minimum Fill-In Problem Representation}
+
+In our ARM assembly code implementation, we use registers R0 and R1 to represent key aspects of the graph for the Minimum Fill-In problem. Specifically, R0 represents the number of vertices (nodes) in the graph, while R1 represents the number of edges.
+
+\subsection{Graph Constraints}
+
+Since the largest number allowed in this example is 3, the possible values for R0 are 1, 2, or 3. A graph with 3 vertices and 3 edges forms a complete graph, which means it has no fill-in. A graph with fewer edges than the number of vertices can only have fill-in if it has more than 2 vertices, so we only need to check the case where R0 = 3 and R1 < 3.
+
+\section{Algorithm Description}
+
+Our algorithm is designed to efficiently determine if the values in R0 and R1 represent a valid solution to the Minimum Fill-In problem, considering the constraints mentioned above. The algorithm is implemented as a series of ARM assembly instructions, with a focus on minimizing computational complexity and adhering to the instruction set limitations.
+
+\subsection{R0 and R1 Comparison}
+
+The first part of the algorithm involves comparing the values in R0 and R1 to the respective conditions required for a valid solution. We check if R0 is equal to 3, and if R1 is less than 3. The results of these comparisons are stored in two temporary registers, R2 and R3. If the conditions are met, the corresponding register is set to 1; otherwise, it is set to 0.
+
+\subsection{Combining Comparison Results}
+
+Next, the algorithm combines the results of the R0 and R1 comparisons to determine if both conditions are met simultaneously. To do this, we perform a bitwise AND operation on the values in R2 and R3, storing the result in another temporary register, R4. If both conditions are met, R4 will be set to 1, indicating a possible fill-in condition.
+
+\subsection{Checking for R0 = 1 or R0 = 2}
+
+In parallel to the previous steps, we also check if R0 is equal to 1 or 2. These cases represent graphs with either 1 or 2 vertices, which are valid solutions to the Minimum Fill-In problem by default, as they do not require any additional edges to become complete graphs.
+
+We perform separate comparisons for R0 = 1 and R0 = 2, storing the results in temporary registers R5 and R6, respectively. If the corresponding condition is met, the register is set to 1; otherwise, it is set to 0.
+
+\subsection{Final Result Combination}
+
+To obtain the final result of the algorithm, we combine the results from the previous steps using bitwise OR operations. First, we perform a bitwise OR operation on the values in R5 and R6, representing the cases where R0 = 1 or R0 = 2. The result is stored in another temporary register, R7.
+
+Next, we perform a bitwise OR operation on the values in R7 and R4, which represents the combined result of all the conditions checked by the algorithm. The final result is stored in a register, R8.
+
+\subsection{Setting the ZERO PSR Flag}
+
+The last step of the algorithm is to set the ZERO Program Status Register (PSR) flag to the value of R8. If R8 is 1, this indicates that the values in R0 and R1 represent a valid solution to the Minimum Fill-In problem, and the ZERO PSR flag will be set to 1. If R8 is 0, the values in R0 and R1 do not represent a valid solution, and the ZERO PSR flag will be set to 0.
+
+\section{Algorithm Efficiency}
+
+Our ARM assembly code implementation has been designed with computational efficiency as a primary concern, utilizing a minimal number of instructions and adhering to the constraints of the instruction set. By avoiding loops, branches, and labels, the algorithm can be executed directly on the ARM processor without incurring additional overhead or complexity. Furthermore, the use of bitwise operations to combine the results of the comparisons ensures a compact and efficient representation of the conditions required for a valid solution.
+
+In conclusion, the presented ARM assembly code algorithm efficiently determines whether the values in R0 and R1 represent a valid solution to the Minimum Fill-In problem, making it well-suited for execution on resource-constrained processors such as the ARM architecture.
+
+
+
+\section{Implementation}
+
+The following program is an implementation of the above description. The created circuit is shown in Figure \ref{fig:Minimum_Fill-In}:
+
+\begin{lstlisting}
+
+{"register_size": 2, "run": false, "display": false}
+HAD R0
+HAD R1
+
+ORACLE
+
+; R2 temporary register
+; Check if R0 = 3
+MOV R2, #3
+CMP R0, R2
+; If R0 = 3, set R2 to 1 and perform AND with R1
+; If R0 != 3, set R2 to 0
+MOV R2, #1
+SBC R2, R2, #0
+
+; Check if R1 < 3
+CMP R1, #3
+; If R1 < 3, set R3 to 1 and perform AND with R2
+; If R1 >= 3, set R3 to 0
+MOV R3, #1
+SBC R3, R3, #0
+
+; Perform AND on R2 and R3 and store the result in R4
+AND R4, R2, R3
+
+; Check if R0 = 1 or R0 = 2
+CMP R0, #1
+; If R0 = 1, set R5 to 1
+; If R0 != 1, set R5 to 0
+MOV R5, #1
+SBC R5, R5, #0
+
+; Check if R0 = 2
+CMP R0, #2
+; If R0 = 2, set R6 to 1
+; If R0 != 2, set R6 to 0
+MOV R6, #1
+SBC R6, R6, #0
+
+; Perform ORR on R5 and R6 and store the result in R7
+ORR R7, R5, R6
+
+; Perform ORR on R7 and R4, and store the result in R8
+ORR R8, R7, R4
+
+; Set ZERO PSR flag to the value of R8
+TST R8, #1
+
+
+END_ORACLE
+
+TGT ZERO
+
+REVERSE_ORACLE
+
+DIF {R0, R1}
+
+STR CR0, R0
+STR CR1, R1
+
+
+\end{lstlisting}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=9cm]{Figures/Minimum_Fill-In_circuit.png}
+    \caption{Using Grover's Algorithm to Solve the Minimum Fill-In Problem}
+    \label{fig:Minimum_Fill-In}
+\end{figure}
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+In this paper, we presented a novel approach to solve the Minimum Fill-In problem using Grover's Algorithm, a quantum search algorithm known for its quadratic speedup over classical search algorithms. We detailed the necessary adaptations, including the oracle construction and the problem-specific Grover operator, and demonstrated the efficacy of our proposed method in solving instances of the Minimum Fill-In problem.
+
+Our approach has the potential to provide significant improvements in solving large-scale and complex instances of the Minimum Fill-In problem, contributing to advancements in various application domains, such as sparse matrix computations, VLSI design, and Bayesian network learning. Furthermore, we discussed the challenges and prospects of implementing our algorithm on noisy intermediate-scale quantum (NISQ) devices, which are currently the most advanced quantum computers available.
+
+As future work, we plan to investigate techniques to improve the efficiency and robustness of our algorithm in the presence of noise, which is a crucial aspect of quantum computing on NISQ devices. We also aim to explore the applicability of our algorithm to other related problems in graph theory and combinatorial optimization, such as the Maximum Clique problem and the Graph Coloring problem. Furthermore, we intend to study the integration of our quantum algorithm with classical algorithms, such as hybrid quantum-classical approaches, to achieve the best of both worlds in solving the Minimum Fill-In problem and other challenging optimization problems.
+

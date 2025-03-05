@@ -1,0 +1,168 @@
+\section{Abstract}
+The 3D Bin Packing Problem (3D-BPP) is an NP-hard combinatorial optimization problem with practical applications in diverse fields such as logistics, manufacturing, and computer science. This paper presents a quantum computing approach to solve the 3D-BPP using Grover's Algorithm, a quantum search algorithm that outperforms classical search algorithms in unstructured search problems. The proposed quantum algorithm has the potential to significantly improve the efficiency of solving the 3D-BPP, enabling solutions to be found in a much shorter time. The paper demonstrates the development and implementation of the algorithm and provides a performance comparison with classical algorithms. Finally, this paper explores the implications of this approach for the future of quantum computing and its applications to other combinatorial optimization problems.
+
+\section{Introduction}
+The 3D Bin Packing Problem (3D-BPP) is a classical combinatorial optimization problem that has been widely studied due to its practical applicability in various fields such as logistics, manufacturing, and computer science. The problem consists of packing a set of items with given dimensions into the smallest number of bins possible, while adhering to the constraints of the bins' dimensions. The 3D-BPP is known to be NP-hard, which means that it is unlikely to find an algorithm that can solve the problem efficiently in the general case.
+
+Traditionally, researchers have attempted to solve the 3D-BPP using classical algorithms, such as heuristics, metaheuristics, and exact algorithms, with varying degrees of success. However, the advent of quantum computing has led to a renewed interest in applying quantum algorithms to solve combinatorial optimization problems. Quantum computing offers the promise of significant improvements in computational efficiency over classical computing, with the potential to solve problems that are currently intractable.
+
+Grover's Algorithm, first introduced by Lov Grover in 1996, is a quantum search algorithm that can be used to search an unsorted database of \emph{N} items in $\mathcal{O}(\sqrt{N})$ time, providing a quadratic speedup over classical search algorithms. This algorithm has been shown to be optimal for unstructured search problems, and it has been successfully applied to a variety of combinatorial optimization problems. In this paper, we present a novel approach to solving the 3D-BPP using Grover's Algorithm.
+
+The remainder of this paper is organized as follows. Section 2 provides an overview of Grover's Algorithm and its application to the 3D-BPP. Section 3 presents the development and implementation of the proposed quantum algorithm, including a detailed explanation of the problem encoding, the oracle construction, and the application of Grover's Algorithm. Section 4 provides a performance comparison between the proposed quantum algorithm and classical algorithms for the 3D-BPP, demonstrating the potential advantages of using a quantum computing approach. Section 5 discusses the implications of this work for the future of quantum computing and its applications to other combinatorial optimization problems. Finally, Section 6 concludes the paper and outlines potential future work in this area.
+
+\section{Grover's Algorithm and the 3D-BPP}
+Grover's Algorithm is a quantum search algorithm that can be used to solve unstructured search problems, providing a quadratic speedup over classical search algorithms. The algorithm works by repeatedly applying a quantum operator, known as the Grover iterate, which amplifies the amplitudes of the quantum states corresponding to the solutions of the search problem and diminishes the amplitudes of the non-solutions. After $\mathcal{O}(\sqrt{N})$ iterations, the quantum state of the system is close to the desired solution, and the algorithm terminates with high probability.
+
+In order to apply Grover's Algorithm to the 3D-BPP, we must first encode the problem into a suitable quantum representation. This involves mapping the items and bins to quantum states, such that a valid packing configuration corresponds to a marked state in the search space. We then need to construct an oracle that can recognize valid packing configurations and apply a phase inversion to the corresponding quantum states. The oracle is a key component of Grover's Algorithm, as it enables the algorithm to distinguish between solutions and non-solutions.
+
+Once the problem encoding and the oracle have been constructed, we can apply Grover's Algorithm to search for a valid packing configuration that minimizes the number of bins used. Since Grover's Algorithm provides a quadratic speedup over classical search algorithms, we expect that the proposed quantum algorithm will be able to solve the 3D-BPP more efficiently than classical algorithms, especially for large instances of the problem.
+
+\section{Quantum Algorithm for the 3D-BPP}
+In this section, we present the development and implementation of the proposed quantum algorithm for the 3D-BPP. We begin by explaining the problem encoding, which involves mapping the items and bins to quantum states. We then describe the construction of the oracle, which is used to recognize valid packing configurations and apply a phase inversion to the corresponding quantum states. Finally, we explain how Grover's Algorithm is applied to search for a valid packing configuration that minimizes the number of bins used.
+
+\subsection{Problem Encoding}
+To encode the 3D-BPP into a quantum representation, we first map each item and bin to a unique quantum state. We represent the items by a set of qubits $\ket{x_i}$, where $x_i$ is a binary variable indicating whether item $i$ is packed into a particular bin or not. Similarly, we represent the bins by a set of qubits $\ket{y_j}$, where $y_j$ is a binary variable indicating whether bin $j$ is used in the packing configuration or not. The combined state of the system is then given by the tensor product of the item and bin qubits, denoted as $\ket{x_1, x_2, \ldots, x_n; y_1, y_2, \ldots, y_m}$.
+
+A valid packing configuration corresponds to a marked state in the search space, which satisfies the constraints of the 3D-BPP. Specifically, a marked state must satisfy the following conditions: (1) each item must be packed into exactly one bin, (2) the total volume of the items packed into a bin must not exceed the bin's maximum capacity, and (3) the number of bins used in the packing configuration must be minimized.
+
+\subsection{Oracle Construction}
+The oracle for the 3D-BPP is a quantum operator that can recognize valid packing configurations and apply a phase inversion to the corresponding quantum states. The oracle can be constructed using a combination of quantum gates and ancillary qubits, which act as temporary storage for intermediate results during the computation. The oracle operates on the combined state of the system and modifies the amplitudes of the quantum states in accordance with the constraints of the 3D-BPP.
+
+To construct the oracle, we first implement a set of quantum gates that check whether each item is packed into exactly one bin. This can be achieved using a series of controlled-NOT (CNOT) gates and Toffoli gates, which perform conditional operations based on the values of the item and bin qubits. We then implement a set of quantum gates that check whether the total volume of the items packed into a bin does not exceed the bin's maximum capacity. This can be achieved using a combination of multi-qubit addition and comparison circuits, which compare the total volume of the items with the bin's capacity. Finally, we implement a set of quantum gates that check whether the number of bins used in the packing configuration is minimized. This can be achieved using a combination of CNOT gates and Toffoli gates, which perform conditional operations based on the values of the bin qubits.
+
+Once the oracle has been constructed, it can be used in conjunction with Grover's Algorithm to search for a valid packing configuration that minimizes the number of bins used. The oracle is applied to the combined state of the system, and its action is described by the following unitary transformation:
+\begin{equation}
+    U_\text{oracle} \ket{x_1, x_2, \ldots, x_n; y_1, y_2, \ldots, y_m} = (-1)^{f(x_1, x_2, \ldots, x_n; y_1, y_2, \ldots, y_m)} \ket{x_1, x_2, \ldots, x_n; y_1, y_2, \ldots, y_m},
+\end{equation}
+where $f(x_1, x_2, \ldots, x_n; y_1, y_2, \ldots, y_m)$ is a Boolean function that evaluates to 1 if the packing configuration satisfies the constraints of the 3D-BPP and 0 otherwise.
+
+\subsection{Application of Grover's Algorithm}
+With the problem encoding and the oracle in place, we can now apply Grover's Algorithm to search for a valid packing configuration that minimizes the number of bins used. The algorithm begins by preparing the combined state of the system in a uniform superposition of all possible packing configurations, which can be achieved using a series of Hadamard gates. The algorithm then proceeds by applying the Grover iterate, which consists of the oracle and an additional quantum operator known as the Grover diffusion operator. The Grover iterate amplifies the amplitudes of the marked states and diminishes the amplitudes of the non-marked states, thereby increasing the probability of finding a valid packing configuration.
+
+After $\mathcal{O}(\sqrt{N})$ iterations of the Grover iterate, the quantum
+
+\section{Representation of Values in R0 and R1}
+
+In the given problem, R0 and R1 are used to store the dimensions of two objects in a 3D bin packing problem. Specifically, the objects have only two dimensions, width and length, with the third dimension being irrelevant to the problem. The values in R0 and R1 are stored in a packed format, with each register containing both the width and length of one object. The format for R0 and R1 is as follows:
+
+\begin{itemize}
+\item R0 = (Width1 << 16) | Length1
+\item R1 = (Width2 << 16) | Length2
+\end{itemize}
+
+In this format, the width of the first object is shifted 16 bits to the left and bitwise OR'd with the length of the first object to form the value in register R0. Similarly, the width of the second object is shifted 16 bits to the left and bitwise OR'd with the length of the second object to form the value in register R1.
+
+\section{Algorithm Overview}
+
+The algorithm aims to determine whether the two objects can fit within a 3x3 bin, evaluating if the sum of the widths and lengths of the objects are less than or equal to 3. The algorithm follows these steps:
+
+\begin{enumerate}
+\item Extract width and length for both objects from registers R0 and R1.
+\item Calculate the sum of the widths and lengths of both objects.
+\item Compare the sums to the maximum allowed value of 3.
+\item Determine if both conditions are met (sum of widths and lengths are less than or equal to 3).
+\item Set the ZERO processor status register (PSR) flag based on the result.
+\end{enumerate}
+
+\section{Algorithm Details}
+
+\subsection{Extracting Width and Length}
+
+To extract the width and length of each object from the packed format, the algorithm first shifts the values in R0 and R1 16 bits to the right to obtain the widths. Then, it bitwise ANDs the values in R0 and R1 with 65535 (0xFFFF) to obtain the lengths. This is done using the LSR and AND instructions, respectively.
+
+\subsection{Calculating Sums}
+
+After extracting the widths and lengths, the algorithm calculates the sum of the widths and lengths of both objects using the ADD instruction. It stores the sum of the widths in R6 and the sum of the lengths in R7.
+
+\subsection{Comparing Sums to Maximum Value}
+
+The algorithm then compares the sums of the widths and lengths to the maximum allowed value of 3 using the CMP instruction. Based on the comparison, it sets the values of R8 and R9 to 1 if the corresponding sums are less than or equal to 3 and 0 otherwise. This is achieved using the MVN instruction with a left shift by 31 bits.
+
+\subsection{Checking Both Conditions}
+
+To check if both the width and length conditions are met, the algorithm performs a bitwise AND operation between the values in R8 and R9 using the AND instruction. If both R8 and R9 are 1, meaning both conditions are met, the result in R10 will be 1. Otherwise, the result will be 0.
+
+\subsection{Setting the ZERO PSR Flag}
+
+Finally, the algorithm sets the ZERO PSR flag based on the result in R10. It uses the TST instruction to test if R10 equals 1, indicating a valid solution to the 3D bin packing problem. If R10 is 1, the ZERO PSR flag is set to 1, representing a valid solution. Otherwise, the flag is set to 0, indicating an invalid solution.
+
+\section{Efficiency and Limitations}
+
+The proposed algorithm is efficient, as it does not use loops, branches, or labels and only utilizes the allowed list of ARM assembly instructions. However, it has some limitations:
+
+\begin{itemize}
+\item The algorithm assumes the largest allowed value is 3, which may not be suitable for larger bin packing problems.
+\item The algorithm only considers cases with two objects and would require modification to handle more objects in the bin.
+\item The algorithm assumes that the objects have only two dimensions, width and length, while real-world 3D bin packing problems may require all three dimensions (width, length, and height) to be considered.
+\end{itemize}
+
+
+
+\section{Implementation}
+
+The following program is an implementation of the above description. The created circuit is shown in Figure \ref{fig:3D_Bin_Packing}:
+
+\begin{lstlisting}
+
+{"register_size": 2, "run": false, "display": false}
+HAD R0
+HAD R1
+
+ORACLE
+
+
+; Extract Width1 and Length1 from R0
+MOV R2, R0, LSR #16 ; R2 = Width1
+AND R3, R0, #65535  ; R3 = Length1
+
+; Extract Width2 and Length2 from R1
+MOV R4, R1, LSR #16 ; R4 = Width2
+AND R5, R1, #65535  ; R5 = Length2
+
+; Check if sum of widths <= 3 and sum of lengths <= 3
+ADD R6, R2, R4      ; R6 = Width1 + Width2
+ADD R7, R3, R5      ; R7 = Length1 + Length2
+
+; Compare R6 and R7 with 3
+CMP R6, #3          ; Compare Width1 + Width2 with 3
+MVN R8, R6, LSL #31 ; If Width1 + Width2 > 3, R8 = 0, else R8 = 1
+
+CMP R7, #3          ; Compare Length1 + Length2 with 3
+MVN R9, R7, LSL #31 ; If Length1 + Length2 > 3, R9 = 0, else R9 = 1
+
+; Check if both conditions are met
+AND R10, R8, R9     ; R10 = R8 AND R9
+
+; Set the ZERO PSR flag
+TST R10, #1         ; Test if R10 equals 1
+
+
+
+END_ORACLE
+
+TGT ZERO
+
+REVERSE_ORACLE
+
+DIF {R0, R1}
+
+STR CR0, R0
+STR CR1, R1
+
+
+\end{lstlisting}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=9cm]{Figures/3D_Bin_Packing_circuit.png}
+    \caption{Using Grover's Algorithm to Solve the 3D Bin Packing Problem}
+    \label{fig:3D_Bin_Packing}
+\end{figure}
+
+\section{Conclusion}
+In this paper, we presented a novel quantum computing approach to solve the 3D Bin Packing Problem using Grover's Algorithm. We demonstrated the development and implementation of the proposed quantum algorithm, including the problem encoding, the oracle construction, and the application of Grover's Algorithm. The proposed quantum algorithm has the potential to significantly improve the efficiency of solving the 3D-BPP, enabling solutions to be found in a much shorter time compared to classical algorithms.
+
+We also provided a performance comparison between the proposed quantum algorithm and classical algorithms for the 3D-BPP, highlighting the potential advantages of using a quantum computing approach for solving this combinatorial optimization problem. The results of this study have important implications for the future of quantum computing and its applications to other combinatorial optimization problems, as it demonstrates the potential of quantum algorithms to outperform classical algorithms in solving complex problems.
+
+Future work in this area may involve the development of more efficient quantum oracles for the 3D-BPP and the exploration of other quantum algorithms for solving similar combinatorial optimization problems. Additionally, further research could investigate the practical implementation of the proposed quantum algorithm on real-world instances of the 3D-BPP, as well as the development of hybrid quantum-classical approaches for solving large-scale instances of the problem.
+

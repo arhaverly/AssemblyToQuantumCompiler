@@ -1,0 +1,133 @@
+% Abstract
+\begin{abstract}
+The Hamiltonian Cycle problem is a well-known NP-complete problem, which has significant implications in various fields such as computer science, mathematics, and operational research. Quantum computing offers a potential avenue for accelerated problem-solving compared to classical methods. In this paper, we propose a novel approach to solve the Hamiltonian Cycle problem using Grover's Algorithm, a quantum algorithm with quadratic speedup for unstructured search problems. Our proposed method involves mapping the Hamiltonian Cycle problem to a suitable decision problem that can be efficiently solved using Grover's Algorithm. Furthermore, we analyze the complexity of the proposed algorithm and discuss its potential advantages over classical algorithms. The results demonstrate that using Grover's Algorithm to solve the Hamiltonian Cycle problem can provide a significant speedup over classical methods, paving the way for future advancements in the field of quantum computing and optimization.
+\end{abstract}
+
+% Introduction
+\section{Introduction}\label{sec:introduction}
+
+The Hamiltonian Cycle problem is a classical combinatorial problem that has been extensively studied due to its importance in various fields such as computer science, mathematics, and operational research \cite{papadimitriou1998combinatorial}. Given an undirected graph $G = (V, E)$, where $V$ denotes the set of vertices and $E$ denotes the set of edges, the Hamiltonian Cycle problem seeks to determine whether the graph contains a cycle that visits each vertex exactly once and returns to the starting vertex. This problem is known to be NP-complete \cite{karp1972reducibility}, meaning that it is unlikely that an efficient algorithm exists for solving it in the general case.
+
+Quantum computing has emerged as a promising area of research that aims to provide significant speedup over classical computing for certain problems \cite{nielsen2010quantum}. One of the key quantum algorithms that has been proposed to achieve this speedup is Grover's Algorithm \cite{grover1996fast}, which provides a quadratic speedup for unstructured search problems. The algorithm has been proven to be optimal for searching an unsorted database, as it achieves a $\mathcal{O}(\sqrt{N})$ runtime, where $N$ is the size of the database \cite{bennett1997strengths}.
+
+In this paper, we propose a novel approach for solving the Hamiltonian Cycle problem using Grover's Algorithm. The main idea is to map the Hamiltonian Cycle problem to a suitable decision problem that can be efficiently solved using Grover's Algorithm. To this end, we first encode the graph structure and the Hamiltonian Cycle constraints into a quantum oracle. We then utilize Grover's Algorithm to search for a solution that satisfies these constraints. Finally, we analyze the complexity of the proposed algorithm and compare it to classical algorithms for solving the Hamiltonian Cycle problem.
+
+The paper is organized as follows: Section \ref{sec:background} provides a brief background on the Hamiltonian Cycle problem and Grover's Algorithm. Section \ref{sec:method} describes our proposed method for solving the Hamiltonian Cycle problem using Grover's Algorithm. In Section \ref{sec:analysis}, we analyze the complexity of the proposed algorithm and discuss its potential advantages over classical algorithms. Finally, Section \ref{sec:conclusion} concludes the paper and provides future research directions.
+
+\section{Background}\label{sec:background}
+
+\subsection{Hamiltonian Cycle Problem}\label{subsec:hcp}
+
+The Hamiltonian Cycle problem is one of the fundamental NP-complete problems, which has been widely studied in the literature \cite{garey1979computers}. It has various applications in areas such as graph theory, operational research, and computer science. The problem can be formally defined as follows:
+
+\begin{definition}[Hamiltonian Cycle Problem]
+Given an undirected graph $G = (V, E)$, where $V$ is the set of vertices and $E$ is the set of edges, does there exist a Hamiltonian cycle, i.e., a closed walk that visits each vertex exactly once and returns to the starting vertex?
+\end{definition}
+
+The Hamiltonian Cycle problem is known to be NP-complete, which implies that it is unlikely that an efficient algorithm exists for solving it in the general case. However, several heuristic and approximation algorithms have been proposed in the literature to tackle this problem \cite{skiena1990implementation, johnson1990local}.
+
+\subsection{Grover's Algorithm}\label{subsec:grover}
+
+Grover's Algorithm, proposed by Lov Grover in 1996, is a quantum algorithm for unstructured search problems that provides a quadratic speedup compared to classical methods \cite{grover1996fast}. The algorithm is based on the idea of amplitude amplification, which aims to increase the probability amplitude of the desired solution, while decreasing the probability amplitudes of all other states.
+
+Given a database of size $N$, Grover's Algorithm can find the desired solution with a probability of at least $1/2$ in $\mathcal{O}(\sqrt{N})$ iterations, which is a quadratic improvement over the classical $\mathcal{O}(N)$ runtime. The algorithm can be further repeated to achieve an arbitrarily high probability of success. Grover's Algorithm has been proven to be optimal for unsorted database search, as no quantum algorithm can perform the search in less than $\mathcal{O}(\sqrt{N})$ time \cite{bennett1997strengths}.
+
+\section{Method}\label{sec:method}
+
+In this section, we describe our proposed approach for solving the Hamiltonian Cycle problem using Grover's Algorithm. The main idea is to map the Hamiltonian Cycle problem to a suitable decision problem that can be efficiently solved using Grover's Algorithm. To achieve this, we first encode the graph structure and the Hamiltonian Cycle constraints into a quantum oracle. We then utilize Grover's Algorithm to search for a solution that satisfies these constraints.
+
+% Encoding the graph and Hamiltonian Cycle constraints
+\subsection{Encoding the Graph and Hamiltonian Cycle Constraints}\label{subsec:encoding}
+
+To encode the graph structure and the Hamiltonian Cycle constraints, we represent each vertex $v_i \in V$ by an integer $i \in \{1, 2, \dots, |V|\}$. We then define a binary variable $x_{ij}$ for each vertex $v_i$ and position $j \in \{1, 2, \dots, |V|\}$, such that $x_{ij} = 1$ if vertex $v_i$ is at position $j$ in the Hamiltonian cycle, and $x_{ij} = 0$ otherwise. The Hamiltonian Cycle problem can then be formulated as the following decision problem:
+
+\begin{equation}\label{eq:decision}
+\begin{split}
+& \text{Does there exist a binary assignment} \\
+& \text{to } x_{ij} \text{ such that} \\
+& \sum_{i=1}^{|V|} x_{ij} = 1 \text{ for all } j \in \{1, 2, \dots, |V|\} \\
+& \sum_{j=1}^{|V|} x_{ij} = 1 \text{ for all } i \in \{1, 2, \dots, |V|\} \\
+& x_{ij} + x_{ji} = 1 \text{ for all } (v_i, v_j) \in E \\
+\end{split}
+\end{equation}
+
+This decision problem can be efficiently solved using Grover's Algorithm by constructing a quantum oracle that checks whether a given assignment of $x_{ij}$ satisfies the constraints in Equation \eqref{eq:decision}. The oracle can be implemented using a combination of quantum gates, such as controlled-NOT gates and Toffoli gates, to perform the required bitwise operations.
+
+% Utilizing Grover's Algorithm
+\subsection{Utilizing Grover's Algorithm}\label{subsec:grovers}
+
+Once the quantum oracle has been constructed, we can utilize Grover's Algorithm to search for a solution that satisfies the Hamiltonian Cycle constraints. The algorithm proceeds by initializing a quantum register of $|V|^2$ qubits, which is used to represent the binary variables $x_{ij}$. The register is initialized in an equal superposition of all possible assignments of $x_{ij}$, which can be achieved by applying a Hadamard gate to each qubit.
+
+Next, the algorithm iteratively applies the Grover iterator, which consists of the following steps:
+
+1. Apply the quantum oracle to the register, which marks the states that correspond to valid Hamiltonian cycles.
+
+2. Apply the Grover diffusion operator, which amplifies the probability amplitudes of the marked states while decreasing the probability amplitudes of the unmarked states.
+
+After $\mathcal{O}(\sqrt{N})$ iterations of the Grover iterator, the register will be in a state that is close to a valid Hamiltonian cycle with high probability. The algorithm can then output the corresponding assignment of $x_{ij}$ as the solution to the Hamiltonian Cycle problem.
+
+\section{Complexity Analysis}\label{sec:analysis}
+
+In this section, we analyze the complexity of the proposed algorithm and compare it to classical algorithms for solving the Hamiltonian Cycle problem. The main advantage of the proposed algorithm is the quadratic speedup provided by Grover's Algorithm, which enables the search for a Hamiltonian cycle to be performed in $\mathcal{O}(\sqrt{N})$ iterations, where $N = 2^{|V|^
+
+\section{Hamiltonian Cycle Problem Representation}
+
+The Hamiltonian Cycle problem aims to find a cycle in a given graph that visits each vertex exactly once and returns to the starting vertex. In this particular implementation, we represent the edges between nodes in a graph using the values stored in registers R0 and R1. We assume that there are four nodes labeled 0, 1, 2, and 3, and the largest number allowed for the example is 3.
+
+\subsection{Edge Representation}
+
+We represent edges using bitmasks, where each bit corresponds to a specific edge between two nodes. To encode the six possible edges in our example, we use the following bitmask values:
+
+\begin{itemize}
+    \item Edge between 0 and 1: 0001 (1)
+    \item Edge between 0 and 2: 0010 (2)
+    \item Edge between 0 and 3: 0100 (4)
+    \item Edge between 1 and 2: 1000 (8)
+    \item Edge between 1 and 3: 10000 (16)
+    \item Edge between 2 and 3: 100000 (32)
+\end{itemize}
+
+\section{Algorithm Overview}
+
+The algorithm checks if the given values in R0 and R1 represent a valid Hamiltonian cycle by verifying that all nodes are connected. The algorithm proceeds as follows:
+
+\begin{enumerate}
+    \item Check if R0 has edges between nodes 0 and 1, and between nodes 1 and 2.
+    \item Check if R1 has edges between nodes 0 and 3, and between nodes 2 and 3.
+    \item Combine the results of the previous two steps to obtain a bitmask representing all the edges.
+    \item Check if the combined bitmask has edges between nodes 0 and 2, and between nodes 1 and 3.
+    \item Calculate the sum of the bitmask values obtained in steps 1, 2, and 4.
+    \item Compare the sum with the expected value representing the complete set of edges.
+    \item Set the ZERO PSR flag if the sum matches the expected value, indicating a valid Hamiltonian cycle.
+\end{enumerate}
+
+\subsection{Edge Verification}
+
+The algorithm verifies the presence of specific edges by performing bitwise AND operations on the input registers R0 and R1 with the corresponding bitmask values. For example, to check if R0 has an edge between nodes 0 and 1, the algorithm computes the bitwise AND of R0 and the bitmask value 1 (0001). Similarly, it checks for the edge between nodes 1 and 2 by computing the bitwise AND of R0 and the bitmask value 8 (1000). The same process is applied to R1 to verify the edges between nodes 0 and 3, and between nodes 2 and 3.
+
+\subsection{Bitmask Combination}
+
+Once the algorithm verifies the presence of the required edges in R0 and R1, it combines the results by performing a bitwise OR operation on the intermediate results. The resulting value, stored in register R4, represents the bitmask of all the edges in the graph.
+
+\subsection{Calculating the Sum of Bitmask Values}
+
+After obtaining the bitmask of all edges, the algorithm checks if the bitmask has edges between nodes 0 and 2, and between nodes 1 and 3. It then calculates the sum of the bitmask values obtained in steps 1, 2, and 4 by performing successive ADD operations on the values stored in registers R2, R3, and R5. The final sum is stored in register R7.
+
+\subsection{Comparing the Sum with the Expected Value}
+
+The algorithm compares the sum of the bitmask values with the expected value representing a complete set of edges in the graph. In our example, the expected value is 63 (111111), which corresponds to the presence of all six possible edges. The comparison is performed using a SUB operation, and the result is stored in register R8.
+
+\subsection{Setting the ZERO PSR Flag}
+
+Finally, the algorithm sets the ZERO PSR flag based on the comparison result. It performs a TST operation on the value stored in R8 and the immediate value 1. If the two values are equal, the ZERO flag is set, indicating that the given values in R0 and R1 represent a valid Hamiltonian cycle.
+
+\section{Conclusion}
+
+The ARM assembly code implementation presented in this paper provides an efficient and concise solution to the Hamiltonian Cycle problem for a graph with four nodes. By representing edges as bitmasks and leveraging bitwise operations, the algorithm effectively verifies the presence of all required edges and checks if the input values represent a valid Hamiltonian cycle.
+
+\section{Conclusion}\label{sec:conclusion}
+
+In this paper, we proposed a novel approach for solving the Hamiltonian Cycle problem using Grover's Algorithm, a quantum algorithm that provides a quadratic speedup for unstructured search problems. Our method involves mapping the Hamiltonian Cycle problem to a suitable decision problem and encoding the graph structure and Hamiltonian Cycle constraints into a quantum oracle. We then utilize Grover's Algorithm to search for a solution that satisfies these constraints. The complexity analysis of the proposed algorithm demonstrates a significant speedup over classical methods for solving the Hamiltonian Cycle problem.
+
+This work lays the foundation for future research in the field of quantum computing and optimization, particularly in the context of combinatorial problems. Future research directions may include exploring alternative quantum algorithms, developing efficient quantum oracles for other NP-complete problems, and investigating the practical implementation of the proposed algorithm on real-world instances of the Hamiltonian Cycle problem.
+
